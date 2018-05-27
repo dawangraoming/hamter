@@ -1,0 +1,16 @@
+@import "../../styles/common";
+
+.app-header-com {
+  height: $HEIGHT_TITLE_BAR;
+  border-bottom: 1px solid $COLOR_BG_MAIN;
+
+  .titlebar {
+    text-align: center;
+    line-height: 20px;
+    font-size: 13px;
+    background-color: #252937;
+    color: #9CA0AC;
+    font-weight: normal;
+    -webkit-app-region: drag
+  }
+}

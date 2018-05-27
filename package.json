@@ -11,7 +11,7 @@
     "views:e2e": "ng e2e",
     "client:watch": "tsc -p ./src/client/ -w",
     "client:build": "tsc -p ./src/client/",
-    "client:start": "electron ./dist/client/app.js"
+    "client:start": "cross-env NODE_ENV=development electron ./dist/client/app.js"
   },
   "private": true,
   "dependencies": {
@@ -24,8 +24,15 @@
     "@angular/platform-browser": "^5.2.0",
     "@angular/platform-browser-dynamic": "^5.2.0",
     "@angular/router": "^5.2.0",
+    "@ngrx/effects": "^5.2.0",
+    "@ngrx/store": "^5.2.0",
+    "@ngrx/store-devtools": "^5.2.0",
     "core-js": "^2.4.1",
+    "pouchdb-adapter-idb": "^6.4.3",
+    "rxdb": "^7.4.4",
     "rxjs": "^5.5.6",
+    "sqlite": "^2.9.2",
+    "sqlite3": "^4.0.0",
     "zone.js": "^0.8.19"
   },
   "devDependencies": {
@@ -36,6 +43,8 @@
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",
     "codelyzer": "^4.0.1",
+    "cross-env": "^5.1.4",
+    "electron": "^1.8.4",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~2.0.0",

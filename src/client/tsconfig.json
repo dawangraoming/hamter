@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "outDir": "../../dist/client",
+    "baseUrl": ".",
+    "target": "es2015",
+    "removeComments": true
+  }
+}

@@ -1,0 +1,29 @@
+/*!
+ * @author dawangraoming<admin@yeenuo.net>
+ * @date 2018/4/6
+ */
+// 主背景色
+$COLOR_BG_MAIN: #000415;
+// 副背景色
+$COLOR_BG_SUB: #242937;
+// ICON默认颜色
+$COLOR_ICON: #6C7790;
+
+// 字体焦点色
+$COLOR_FONT_FOCUS: #FFF;
+// 字体主要颜色
+$COLOR_FONT_MAIN: #9EA0A8;
+// 字体副色
+$COLOR_FONT_SUB: #83858C;
+
+$HEIGHT_TITLE_BAR: 21px;
+
+
+@mixin rangeLandscape() {
+  display: flex;
+
+}
+
+@mixin rangeVertical() {
+
+}
