@@ -10,8 +10,7 @@ import {environment} from '../environments/environment';
 import {AppComponent} from './app.component';
 import {reducers} from '../reducers';
 import {HeaderComponent} from './header/header.component';
-import {ArticlesEffects} from '../effects/articles.effects';
-import {DBService} from '../db';
+import effects from '../effects';
 
 
 @NgModule({
@@ -27,9 +26,9 @@ import {DBService} from '../db';
       maxAge: 25, // Retains last 25 states
       logOnly: environment.production // Restrict extension to log-only mode
     }),
-    EffectsModule.forRoot([ArticlesEffects])
+    EffectsModule.forRoot(effects)
   ],
-  providers: [DBService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

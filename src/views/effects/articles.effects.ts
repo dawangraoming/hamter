@@ -6,28 +6,47 @@
 import {Injectable} from '@angular/core';
 import {Effect, Actions, ofType} from '@ngrx/effects';
 import {Observable} from 'rxjs/Observable';
+import {catchError, map, mergeMap, switchMap, startWith} from 'rxjs/operators';
 
-import {ArticlesTypes} from '../actions';
-import {map, mergeMap} from 'rxjs/operators';
 
+import {Hamter} from '../../hamter';
+import {ArticlesAddSuccess, ArticlesLoadSuccess, ArticlesTypes, TermsLoadSuccess} from '../actions';
+
+import communication from '../modules/communication';
+import {Action} from '@ngrx/store';
 
 @Injectable()
 export class ArticlesEffects {
   constructor(private actions$: Actions) {
-    console.log('Effect 实例化', this.actions$);
   }
 
   @Effect()
-  addArticle$: Observable<any> = this.actions$.pipe(
+  addArticle$: Observable<Action> = this.actions$.pipe(
     ofType(ArticlesTypes.ArticlesAdd),
-    map((action: any) => {
+    map((action: any): any => action.payload),
+    switchMap((params) => communication.sendEvent({
+        channel: 'hamter:addArticles',
+        promise: true,
+        params
+      })
+    ),
+    switchMap((params: Hamter.AddArticlesCallbackParams) => [
+      new TermsLoadSuccess(params.terms),
+      new ArticlesAddSuccess(params.articles)
+    ])
+  );
 
-      console.log('Effect 测试测试', arguments);
-      return action.payload;
-    }),
-    mergeMap(data => {
-      console.log('asdasdasd', arguments);
-      return data;
-    })
+
+  @Effect()
+  loadArticles$: Observable<Action> = this.actions$.pipe(
+    ofType(ArticlesTypes.ArticlesLoad),
+    map((action: any): any => action.payload),
+    switchMap((params) => communication.sendEvent({
+        channel: 'hamter:getArticlesOfTerm',
+        promise: true,
+        params
+      })
+    ),
+    map((params: Hamter.ArticleInterface[]) => new ArticlesLoadSuccess(params))
   );
 }

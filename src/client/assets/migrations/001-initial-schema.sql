@@ -33,9 +33,18 @@ CREATE TABLE IF NOT EXISTS options (
   option_value TEXT DEFAULT ('')
 );
 
+CREATE TRIGGER count_term_articles_create AFTER INSERT ON terms_relationships
+BEGIN
+	UPDATE  terms SET term_count = (SELECT count(*) FROM terms_relationships WHERE term_id = new.term_id) WHERE term_id = new.term_id;
+END;
+
+CREATE TRIGGER count_term_articles_update AFTER UPDATE ON terms_relationships
+BEGIN
+	UPDATE  terms SET term_count = (SELECT count(*) FROM terms_relationships WHERE term_id = new.term_id) WHERE term_id = new.term_id;
+	UPDATE  terms SET term_count = (SELECT count(*) FROM terms_relationships WHERE term_id = old.term_id) WHERE term_id = old.term_id;
+END;
+
 INSERT INTO terms (term_type, term_name) VALUES ('category', 'unclassified');
-
-
 
 
 -- Down

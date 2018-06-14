@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
-import {Store, select} from '@ngrx/store';
-import {SetHeaderTitleAction, AddCategoryAction, RemoveCategoryAction, CategoryInterface, AddArticlesAction} from '../actions';
-import {getCategoriesList} from '../reducers';
-import {dataDemo, DBService} from '../db';
+import {Store} from '@ngrx/store';
+import {SetHeaderTitleAction, TermsRemove, TermsLoad, TermsAdd, ArticlesAdd, ArticlesLoad} from '../actions';
+import {getArticles, getTerms} from '../reducers';
+
+import {Hamter} from '../../hamter';
 
 
 @Component({
@@ -14,39 +15,45 @@ import {dataDemo, DBService} from '../db';
 export class AppComponent implements OnInit {
 
   public name: string;
-  categoryName: string;
-  categoriesList$: Observable<CategoryInterface[]>;
+  public categoryName: string;
+  terms$: Observable<Hamter.TermInterface[]>;
+  articles$: Observable<Hamter.ArticleInterface[]>;
 
-  constructor(private database: DBService, private store: Store<any>) {
-    this.categoriesList$ = this.store.select(getCategoriesList);
+  constructor(private store: Store<any>) {
+    this.terms$ = this.store.select(getTerms);
+    this.articles$ = this.store.select(getArticles);
   }
 
   drapFile(event: DragEvent) {
     const files = event.dataTransfer.files;
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-
-    }
+    const articles = Array.from(files).map(item => {
+      return {
+        article_name: item.name,
+        article_local_path: item.path,
+        article_remote_path: '',
+      };
+    });
+    this.addArticles({articles, categoryId: 1});
   }
 
-  testAddCate() {
-    const createdTime = Date.now();
-    const id = Math.random().toString(16);
-    const index = -1;
-
-    this.store.dispatch(new AddCategoryAction([{createdTime, id, index, name: this.categoryName}]));
+  getTermsAndRelationships() {
+    this.store.dispatch(new TermsLoad());
+    this.store.dispatch(new ArticlesLoad({termID: 1}));
   }
 
-  testAddArt() {
-    const createdTime = Date.now();
-    const id = Math.random().toString(16);
-    const index = -1;
-    console.log('test testAddArt');
-    this.store.dispatch(new AddArticlesAction([{createdTime, id, name: this.categoryName, path: '', category: null}]));
+  addTermMethod() {
+    this.store.dispatch(new TermsAdd({
+      type: 'category',
+      names: [this.categoryName]
+    }));
   }
 
-  testClickDB() {
-    dataDemo();
+  removeTermMethod(id: number) {
+    this.store.dispatch(new TermsRemove({id: [id]}));
+  }
+
+  addArticles(params: Hamter.AddArticlesParams) {
+    this.store.dispatch(new ArticlesAdd(params));
   }
 
 
@@ -69,5 +76,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     document.ondragover = document.ondrop = e => e.preventDefault();
+    this.getTermsAndRelationships();
   }
 }

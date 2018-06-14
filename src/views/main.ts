@@ -1,3 +1,9 @@
+///<reference path="../../node_modules/electron/electron.d.ts"/>
+///<reference path="../hamter.d.ts"/>
+
+
+
+
 import {enableProdMode} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 

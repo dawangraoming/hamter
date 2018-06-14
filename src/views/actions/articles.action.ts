@@ -6,38 +6,63 @@
 
 import {Action} from '@ngrx/store';
 
+import {Hamter} from '../../hamter';
+
+
 export enum ArticlesTypes {
-  ArticlesList = '[Articles] List',
+  ArticlesLoad = '[Articles] Load',
+  ArticlesLoadSuccess = '[Articles] Load Success',
   ArticlesRemove = '[Articles] Remove',
+  ArticlesRemoveSuccess = '[Articles] Remove Success',
   ArticlesAdd = '[Articles] Add',
+  ArticlesAddSuccess = '[Articles] Add Success',
   ArticlesReset = '[Articles] Reset'
 }
 
-export interface ArticleInterface {
-  id: string;
-  name: string;
-  path: string;
-  category: {
-    id: string
-  };
-  createdTime: number;
-}
+export class ArticlesLoad implements Action {
+  readonly type = ArticlesTypes.ArticlesLoad;
 
-export class AddArticlesAction implements Action {
-  readonly type = ArticlesTypes.ArticlesAdd;
+  constructor(public payload: Hamter.GetArticlesOfTermParams) {
 
-  constructor(public payload: ArticleInterface[]) {
   }
 }
 
-interface RemoveArticlesInterface {
-  id: number;
+export class ArticlesLoadSuccess implements Action {
+  readonly type = ArticlesTypes.ArticlesLoadSuccess;
+
+  constructor(public payload: Hamter.ArticleInterface[]) {
+
+  }
 }
 
-export class RemoveArticlesAction implements Action {
+export class ArticlesAdd implements Action {
+  readonly type = ArticlesTypes.ArticlesAdd;
+
+  constructor(public payload: Hamter.AddArticlesParams) {
+  }
+}
+
+export class ArticlesAddSuccess implements Action {
+  readonly type = ArticlesTypes.ArticlesAddSuccess;
+
+  constructor(public payload: Hamter.ArticleInterface[]) {
+
+  }
+}
+
+
+export class ArticlesRemove implements Action {
   readonly type = ArticlesTypes.ArticlesRemove;
 
-  constructor(public payload: RemoveArticlesInterface) {
+  constructor(public payload: number[]) {
+  }
+}
+
+export class ArticlesRemoveSuccess implements Action {
+  readonly type = ArticlesTypes.ArticlesRemoveSuccess;
+
+  constructor(public payload: number[]) {
+
   }
 }
 
@@ -46,6 +71,9 @@ export class ResetArticlesAction implements Action {
 }
 
 
-export type ArticlesActions = AddArticlesAction
-  | RemoveArticlesAction
-  | ResetArticlesAction;
+export type ArticlesActions = ArticlesLoad
+  | ArticlesLoadSuccess
+  | ArticlesAdd
+  | ArticlesAddSuccess
+  | ArticlesRemove
+  | ArticlesRemoveSuccess;

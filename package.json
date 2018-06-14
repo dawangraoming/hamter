@@ -11,7 +11,8 @@
     "views:e2e": "ng e2e",
     "client:watch": "tsc -p ./src/client/ -w",
     "client:build": "tsc -p ./src/client/",
-    "client:start": "cross-env NODE_ENV=development electron ./dist/client/app.js"
+    "client:start": "cross-env NODE_ENV=development electron ./dist/client/app.js",
+    "rebuild:sqlite": "electron-rebuild sqlite"
   },
   "private": true,
   "dependencies": {
@@ -45,6 +46,7 @@
     "codelyzer": "^4.0.1",
     "cross-env": "^5.1.4",
     "electron": "^1.8.4",
+    "electron-rebuild": "^1.7.3",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~2.0.0",

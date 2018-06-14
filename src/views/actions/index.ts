@@ -4,5 +4,5 @@
  */
 
 export * from './header.actions';
-export * from './category.actions';
+export * from './terms.actions';
 export * from './articles.action';
