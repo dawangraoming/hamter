@@ -4,7 +4,7 @@
  */
 
 import {BrowserWindow, app} from 'electron';
-import {IS_DEV} from '../utils/env-check';
+import {IS_DEV} from './modules/env-check';
 import {join} from 'path';
 import './communication';
 import dbService from './modules/db-service';
