@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS articles(
   article_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
   article_name VARCHAR DEFAULT (''),
-  article_local_path TEXT NOT NULL,
+  article_local_path TEXT NOT NULL UNIQUE,
   article_remote_path TEXT,
   article_created_time DATETIME DEFAULT (datetime('now', 'localtime'))
 );

@@ -52,7 +52,7 @@ class Communication {
     this.dbService.open().then(db => this.db = db);
     // 获取原型链上的方法
     const eventMethodList = Object.getOwnPropertyNames((<any>this).__proto__);
-    // 自动执行以 Event$ 结尾命名的方法，断言this为any，防止报错
+    // 自动执行以 Event$ 结尾命名的方法，断言this为any，防止TS报错
     eventMethodList.forEach((name: any) => /Event\$$/.test(name) && (this as any)[name]());
     // this.addGetTermsAndRelationshipsEvent$();
     // this.addTermsEvent$();

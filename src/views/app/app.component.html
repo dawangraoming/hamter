@@ -1,58 +1,8 @@
 <div class="app-main">
   <app-header></app-header>
-  <div class="workbench-container range-landscape">
-    <div class="toolbar-com range-vertical">
-      <span class="hamter-logo"></span>
-      <ul class="main-tool-list">
-        <li><a class="tool-button" title="placeholder-1"></a></li>
-        <li><a class="tool-button" title="placeholder-2"></a></li>
-        <li><a class="tool-button" title="placeholder-3"></a></li>
-      </ul>
-    </div>
-    <div class="sidebar-com">
-      <!--搜索功能-->
-      <div class="search-container">
-        <input type="text" placeholder="搜索内容" class="search-input" id="mainSearch">
-        <label for="mainSearch"><a class="search-button" title="搜索按钮">搜索</a></label>
-      </div>
-      <!--列表功能-->
-      <div class="categories-container">
-        <ul class="categories-list">
-          <li class="category category-all">全部分类</li>
-          <li class="category"
-              *ngFor="let item of terms$ | async">{{item.term_name}}({{item.term_count}})
-            <span *ngIf="item.term_id !== 1" (click)="removeTermMethod(item.term_id)">删除</span>
-          </li>
-        </ul>
-        <input type="text" placeholder="添加分组" [(ngModel)]="categoryName" required/>
-        <a href="javascript:void(0);" (click)="addTermMethod()">添加分组</a>
-
-      </div>
-    </div>
-
-    <div class="gallery-com" (drop)="drapFile($event)">
-      <ul class="articles-list">
-        <li *ngFor="let item of articles$ | async">
-          <span>{{item.article_name}}</span>
-          <img [src]="'file://' + item.article_local_path" alt="图片"/>
-        </li>
-      </ul>
-    </div>
+  <div class="workbench-container">
+    <app-side-bar></app-side-bar>
+    <app-gallery></app-gallery>
   </div>
-
-
-  <!--<label for="testName">testName</label>-->
-  <!--<input type="text" [(ngModel)]="name" id="testName">-->
-  <!--<button (click)="inputTestButton()">button</button>-->
-  <!--<div>-->
-  <!--<input type="text" [(ngModel)]="categoryName" required>-->
-  <!--<button (click)="testAddCate()">button</button>-->
-  <!--</div>-->
-  <!--<ul>-->
-  <!--<li *ngFor="let item of categoriesList$ | async">{{item.id}} {{item.name}}</li>-->
-  <!--</ul>-->
-  <!--<div class="app-main" (drop)="drapFile($event)" (dragover)="dragover($event)" (dragleave)="dragLeave($event)">-->
-
-  <!--</div>-->
 </div>
 

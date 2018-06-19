@@ -1,0 +1,19 @@
+<div class="sidebar-com">
+  <!--搜索功能-->
+  <div class="search-container">
+    <input type="text" placeholder="搜索内容" class="search-input" id="mainSearch">
+    <label for="mainSearch"><a class="search-button" title="搜索按钮">搜索</a></label>
+  </div>
+  <!--列表功能-->
+  <div class="categories-container">
+    <ul class="categories-list">
+      <li class="category category-all">全部分类</li>
+      <li class="category"
+          *ngFor="let item of terms$ | async">{{item.term_name}}({{item.term_count}})
+        <span *ngIf="item.term_id !== 1" (click)="removeTermMethod(item.term_id)">删除</span>
+      </li>
+    </ul>
+    <input type="text" placeholder="添加分组" [(ngModel)]="categoryName" required/>
+    <a href="javascript:void(0);" (click)="addTermMethod()">添加分组</a>
+  </div>
+</div>

@@ -15,46 +15,19 @@ import {Hamter} from '../../hamter';
 export class AppComponent implements OnInit {
 
   public name: string;
-  public categoryName: string;
-  terms$: Observable<Hamter.TermInterface[]>;
-  articles$: Observable<Hamter.ArticleInterface[]>;
+
 
   constructor(private store: Store<any>) {
-    this.terms$ = this.store.select(getTerms);
-    this.articles$ = this.store.select(getArticles);
   }
 
-  drapFile(event: DragEvent) {
-    const files = event.dataTransfer.files;
-    const articles = Array.from(files).map(item => {
-      return {
-        article_name: item.name,
-        article_local_path: item.path,
-        article_remote_path: '',
-      };
-    });
-    this.addArticles({articles, categoryId: 1});
-  }
 
   getTermsAndRelationships() {
     this.store.dispatch(new TermsLoad());
     this.store.dispatch(new ArticlesLoad({termID: 1}));
   }
 
-  addTermMethod() {
-    this.store.dispatch(new TermsAdd({
-      type: 'category',
-      names: [this.categoryName]
-    }));
-  }
 
-  removeTermMethod(id: number) {
-    this.store.dispatch(new TermsRemove({id: [id]}));
-  }
 
-  addArticles(params: Hamter.AddArticlesParams) {
-    this.store.dispatch(new ArticlesAdd(params));
-  }
 
 
   inputTestButton() {

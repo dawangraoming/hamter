@@ -1,6 +1,10 @@
 @import "../../styles/common";
 
 .app-header-com {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: $HEIGHT_TITLE_BAR;
   border-bottom: 1px solid $COLOR_BG_MAIN;
 

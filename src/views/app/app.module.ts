@@ -11,12 +11,16 @@ import {AppComponent} from './app.component';
 import {reducers} from '../reducers';
 import {HeaderComponent} from './header/header.component';
 import effects from '../effects';
+import { SideBarComponent } from './side-bar/side-bar.component';
+import { GalleryComponent } from './gallery/gallery.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent
+    HeaderComponent,
+    SideBarComponent,
+    GalleryComponent
   ],
   imports: [
     BrowserModule,
