@@ -6,11 +6,11 @@ import {Hamter} from '../../../hamter';
 import {getTerms} from '../../reducers';
 
 @Component({
-  selector: 'app-side-bar',
-  templateUrl: './side-bar.component.html',
-  styleUrls: ['./side-bar.component.scss']
+  selector: 'app-sidebar',
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.scss']
 })
-export class SideBarComponent implements OnInit {
+export class SidebarComponent implements OnInit {
 
   public categoryName: string;
   terms$: Observable<Hamter.TermInterface[]> = this.store.select(getTerms);
