@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {SetHeaderTitleAction, TermsRemove, TermsLoad, TermsAdd, ArticlesAdd, ArticlesLoad} from '../actions';
 import {getArticles, getTerms} from '../reducers';

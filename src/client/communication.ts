@@ -12,12 +12,7 @@ import * as sqlite from 'sqlite';
 
 import {Hamter} from '../hamter';
 
-// class Communication extends IpcModule {
-//
-//   constructor() {
-//     super(ipcMain);
-//   }
-// }
+
 
 interface EventParamsInterface {
   callbackId?: string;

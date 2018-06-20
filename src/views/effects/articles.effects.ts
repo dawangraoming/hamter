@@ -5,7 +5,7 @@
 
 import {Injectable} from '@angular/core';
 import {Effect, Actions, ofType} from '@ngrx/effects';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {catchError, map, mergeMap, switchMap, startWith} from 'rxjs/operators';
 
 

@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
+import {Store} from '@ngrx/store';
 import {Hamter} from '../../../hamter';
 import {getArticles} from '../../reducers';
-import {Store} from '@ngrx/store';
 import {ArticlesAdd} from '../../actions';
 
 @Component({

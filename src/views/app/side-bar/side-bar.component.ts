@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TermsAdd, TermsRemove} from '../../actions';
 import {Store} from '@ngrx/store';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {Hamter} from '../../../hamter';
 import {getTerms} from '../../reducers';
 
