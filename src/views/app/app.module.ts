@@ -11,7 +11,7 @@ import {AppComponent} from './app.component';
 import {reducers} from '../reducers';
 import {HeaderComponent} from './header/header.component';
 import effects from '../effects';
-import {SideBarComponent} from './side-bar/side-bar.component';
+import {SidebarComponent} from './sidebar/sidebar.component';
 import {GalleryComponent} from './gallery/gallery.component';
 
 
@@ -19,7 +19,7 @@ import {GalleryComponent} from './gallery/gallery.component';
   declarations: [
     AppComponent,
     HeaderComponent,
-    SideBarComponent,
+    SidebarComponent,
     GalleryComponent
   ],
   imports: [
