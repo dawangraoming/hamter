@@ -10,7 +10,7 @@ export interface HeaderState {
 }
 
 const initialState: HeaderState = {
-  title: 'Hamter'
+  title: 'Hamter Designer'
 };
 
 export const reducer = (state: HeaderState = initialState, action: actions.HeaderActions) => {

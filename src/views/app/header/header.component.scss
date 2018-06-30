@@ -7,14 +7,19 @@
   width: 100%;
   height: $HEIGHT_TITLE_BAR;
   border-bottom: 1px solid $COLOR_BG_MAIN;
+  background-color: $COLOR_BG_SUB;
 
-  .titlebar {
-    text-align: center;
-    line-height: 20px;
-    font-size: 13px;
-    background-color: #252937;
+  .title-bar {
+    height: 23px;
+    border-bottom: 1px solid $COLOR_BG_MAIN;
     color: #9CA0AC;
-    font-weight: normal;
-    -webkit-app-region: drag
+
+    h1.title {
+      text-align: center;
+      line-height: 22px;
+      font-size: 12px;
+      font-weight: normal;
+      -webkit-app-region: drag;
+    }
   }
 }

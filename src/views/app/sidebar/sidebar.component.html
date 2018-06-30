@@ -1,18 +1,37 @@
 <div class="sidebar-com">
-  <!--搜索功能-->
-  <div class="search-container">
-    <input type="text" placeholder="搜索内容" class="search-input" id="mainSearch">
-    <label for="mainSearch"><a class="search-button" title="搜索按钮">搜索</a></label>
-  </div>
+
   <!--列表功能-->
   <div class="categories-container">
-    <ul class="categories-list">
-      <li class="category category-all">全部分类</li>
-      <li class="category"
-          *ngFor="let item of terms$ | async">{{item.term_name}}({{item.term_count}})
-        <span *ngIf="item.term_id !== 1" (click)="removeTermMethod(item.term_id)">删除</span>
-      </li>
-    </ul>
+    <dl class="categories-list">
+      <dt class="categories-list-title">系统分类</dt>
+      <dd class="categories-list-item iconfont icon-home categories-list-item-selected">
+        <div class="category-info">
+          <span class="category-name">全部</span>
+        </div>
+      </dd>
+      <dd class="categories-list-item iconfont icon-folder">
+        <div class="category-info">
+          <span class="category-name">未分类</span>
+        </div>
+      </dd>
+      <dd class="categories-list-item iconfont icon-delete">
+        <div class="category-info">
+          <span class="category-name">垃圾桶</span>
+        </div>
+      </dd>
+    </dl>
+    <dl class="categories-list">
+      <dt class="categories-list-title">个人分类</dt>
+      <ng-container *ngFor="let item of terms$ | async">
+        <dd class="categories-list-item iconfont icon-folder" *ngIf="item.term_id !== 1">
+          <div class="category-info">
+            <span class="category-name">{{item.term_name}}</span>
+            <span class="category-count">{{item.term_count}}</span>
+          </div>
+          <!--<span (click)="removeTermMethod(item.term_id)">删除</span>-->
+        </dd>
+      </ng-container>
+    </dl>
     <input type="text" placeholder="添加分组" [(ngModel)]="categoryName" required/>
     <a href="javascript:void(0);" (click)="addTermMethod()">添加分组</a>
   </div>

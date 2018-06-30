@@ -24,7 +24,8 @@ function createWindow() {
     frame: false,
     titleBarStyle: 'hidden',
     webPreferences: {
-      webSecurity: false
+      webSecurity: false,
+      minimumFontSize: 9
     }
   });
 

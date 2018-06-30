@@ -3,21 +3,21 @@
  * @date 2018/4/6
  */
 // 主背景色
-$COLOR_BG_MAIN: #000415;
+$COLOR_BG_MAIN: #0C0C0C;
 // 副背景色
-$COLOR_BG_SUB: #242937;
+$COLOR_BG_SUB: #1F2227;
 // ICON默认颜色
 $COLOR_ICON: #6C7790;
-
+// 焦点色
+$COLOR_FOCUS: #1943A2;
 // 字体焦点色
-$COLOR_FONT_FOCUS: #FFF;
+$COLOR_FONT_FOCUS: #FCFCFC;
 // 字体主要颜色
-$COLOR_FONT_MAIN: #9EA0A8;
+$COLOR_FONT_MAIN: #9CA0AD;
 // 字体副色
-$COLOR_FONT_SUB: #83858C;
+$COLOR_FONT_SUB: #92949B;
 
-$HEIGHT_TITLE_BAR: 21px;
-
+$HEIGHT_TITLE_BAR: 56px;
 
 @mixin rangeLandscape() {
   display: flex;
