@@ -23,15 +23,28 @@
     <dl class="categories-list">
       <dt class="categories-list-title">个人分类</dt>
       <ng-container *ngFor="let item of terms$ | async">
-        <dd class="categories-list-item iconfont icon-folder" *ngIf="item.term_id !== 1">
+        <dd class="categories-list-item iconfont icon-folder"
+            *ngIf="item.term_id !== 1"
+            (contextmenu)="showContextMenuMethod(item.term_id, inputCategoryName)">
           <div class="category-info">
-            <span class="category-name">{{item.term_name}}</span>
+            <span class="category-name"
+                  [style.display]="renameTermId === item.term_id ? 'none' : ''">{{item.term_name}}</span>
+            <input class="category-name"
+                   placeholder="请输入分组名"
+                   #inputCategoryName
+                   [value]="item.term_name"
+                   [style.display]="renameTermId !== item.term_id ? 'none' : ''"/>
             <span class="category-count">{{item.term_count}}</span>
           </div>
           <!--<span (click)="removeTermMethod(item.term_id)">删除</span>-->
         </dd>
       </ng-container>
     </dl>
+    <div class="categories-context-menu" *ngIf="showContextMenu">
+      <button>新建分类</button>
+      <button>重命名</button>
+      <button>删除</button>
+    </div>
     <input type="text" placeholder="添加分组" [(ngModel)]="categoryName" required/>
     <a href="javascript:void(0);" (click)="addTermMethod()">添加分组</a>
   </div>

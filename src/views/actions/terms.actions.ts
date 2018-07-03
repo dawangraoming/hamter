@@ -16,15 +16,19 @@ export enum TermTypes {
   RemoveSuccess = '[Terms] Remove Success',
   Add = '[Terms] Add',
   AddSuccess = '[Terms] Add Success',
+  Rename = '[Terms] Rename',
+  RenameCompleted = '[Terms] Rename Completed',
+  RenameSuccess = '[Terms] Rename Success',
   TermsReset = '[Terms] Reset',
   TermsResetSuccess = '[Terms] Reset Success',
 }
 
-
+// load data from the database
 export class TermsLoad implements Action {
   readonly type = TermTypes.Load;
 }
 
+// load data success
 export class TermsLoadSuccess implements Action {
   readonly type = TermTypes.LoadSuccess;
 
@@ -65,6 +69,25 @@ export class TermsRemoveSuccess implements Action {
   }
 }
 
+interface TermRenameInterface {
+  id: number;
+}
+
+export class TermRename implements Action {
+  readonly type = TermTypes.Rename;
+
+  constructor(public payload: TermRenameInterface) {
+  }
+}
+
+export class TermRenameCompleted implements Action {
+  readonly type = TermTypes.RenameCompleted;
+
+  constructor() {
+  }
+}
+
+
 export class ResetTermsAction implements Action {
   readonly type = TermTypes.TermsReset;
 }
@@ -75,6 +98,8 @@ export type TermsActions = TermsAdd
   | TermsLoadSuccess
   | TermsRemove
   | TermsRemoveSuccess
+  | TermRename
+  | TermRenameCompleted
   | ResetTermsAction;
 
 

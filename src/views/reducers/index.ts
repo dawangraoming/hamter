@@ -24,6 +24,7 @@ export const reducers: ActionReducerMap<State> = {
 export const getHeaderTitle = (state: State) => state.header.title;
 
 export const getTerms = (state: State) => state.terms.terms;
+export const getRenameTermId = (state: State) => state.terms.renameId;
 
 export const getArticles = (state: State) => state.articles.articles;
 

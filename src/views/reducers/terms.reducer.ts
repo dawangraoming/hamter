@@ -10,11 +10,13 @@ import TermInterface = Hamter.TermInterface;
 export interface TermsState {
   terms: TermInterface[];
   loaded: boolean;
+  renameId: number;
 }
 
 const initialState: TermsState = {
   terms: [],
-  loaded: false
+  loaded: false,
+  renameId: 0,
 };
 
 export function reducer(state: TermsState = initialState, action: TermsActions) {
@@ -48,6 +50,19 @@ export function reducer(state: TermsState = initialState, action: TermsActions) 
           return true;
         })
       };
+
+    case TermTypes.Rename:
+      return {
+        ...state,
+        renameId: action.payload.id,
+      };
+
+    case TermTypes.RenameCompleted:
+      return {
+        ...state,
+        renameId: 0,
+      };
+
 
     case TermTypes.TermsReset:
       return initialState;
