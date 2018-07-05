@@ -5,13 +5,12 @@
 
 
 // import {IpcModule} from '../utils/ipc';
-import {ipcMain} from 'electron';
+import {ipcMain, BrowserWindow, Menu, MenuItem} from 'electron';
 import * as dbService from './modules/db-service';
 import * as sqlite from 'sqlite';
 
 
 import {Hamter} from '../hamter';
-
 
 
 interface EventParamsInterface {
@@ -42,6 +41,9 @@ class Communication {
   db: sqlite.Database;
   callbackChannelName = 'hamter:_HamterCallbackMethod';
   dbService = dbService.default;
+  menuList = {
+    contextMenuOfTerm: null
+  };
 
   constructor() {
     this.dbService.open().then(db => this.db = db);
@@ -54,10 +56,38 @@ class Communication {
     // this.removeTermsEvent$();
     // this.addArticlesEvent$();
     // this.addGetArticlesOfTermEvent$();
+    this.createMenuList();
   }
 
-  createEvent(name: Hamter.IpcType, callback: (param: any) => Promise<any>) {
-    ipcMain.on(name, async (event: Electron.Event, remoteParams: any) => {
+  createMenuList() {
+    const menu = new Menu();
+    menu.append(new MenuItem({
+      label: '新建',
+      click() {
+
+      }
+    }));
+    menu.append(new MenuItem({
+      label: '重命名',
+      click() {
+        console.log('time');
+      }
+    }));
+    menu.append(new MenuItem({
+      label: '删除',
+      click() {
+
+      }
+    }));
+    this.menuList['contextMenuOfTerm'] = menu;
+  }
+
+  createEvent(name: Hamter.IpcType, callback: any) {
+    ipcMain.on(name, callback);
+  }
+
+  createCallbackEvent(name: Hamter.IpcType, callback: (param: any) => Promise<any>) {
+    this.createEvent(name, async (event: Electron.Event, remoteParams: any) => {
       const {callbackId, params} = remoteParams;
       const data = await callback(params);
       event.sender.send(this.callbackChannelName, {
@@ -65,6 +95,14 @@ class Communication {
         data
       });
     });
+    // ipcMain.on(name, async (event: Electron.Event, remoteParams: any) => {
+    //   const {callbackId, params} = remoteParams;
+    //   const data = await callback(params);
+    //   event.sender.send(this.callbackChannelName, {
+    //     callbackId,
+    //     data
+    //   });
+    // });
   }
 
   addGetTermsAndRelationshipsEvent$() {
@@ -86,7 +124,7 @@ class Communication {
   }
 
   addGetArticlesOfTermEvent$() {
-    this.createEvent('hamter:getArticlesOfTerm', async (params: Hamter.GetArticlesOfTermParams) => {
+    this.createCallbackEvent('hamter:getArticlesOfTerm', async (params: Hamter.GetArticlesOfTermParams) => {
       return await this.dbService.getArticlesOfTerm(params);
     });
   }
@@ -112,18 +150,21 @@ class Communication {
   }
 
   removeTermsEvent$() {
-    ipcMain.on('hamter:removeTerms', async (event: Electron.Event, remoteParams: RemoveTermsEventParamsInterface) => {
-      const {callbackId, params} = remoteParams;
-      const data = await this.dbService.removeTerms(params);
-      event.sender.send(this.callbackChannelName, {
-        callbackId,
-        data
-      });
+    this.createCallbackEvent('hamter:removeTerms', async (params: Hamter.RemoveTermsOrArticlesParams) => {
+      return await this.dbService.removeTerms(params);
     });
+    // ipcMain.on('hamter:removeTerms', async (event: Electron.Event, remoteParams: RemoveTermsEventParamsInterface) => {
+    //   const {callbackId, params} = remoteParams;
+    //   const data = await this.dbService.removeTerms(params);
+    //   event.sender.send(this.callbackChannelName, {
+    //     callbackId,
+    //     data
+    //   });
+    // });
   }
 
   addArticlesEvent$() {
-    this.createEvent('hamter:addArticles', async (params: Hamter.AddArticlesParams) => {
+    this.createCallbackEvent('hamter:addArticles', async (params: Hamter.AddArticlesParams) => {
       return await this.dbService.addArticles(params);
     });
     // ipcMain.on('hamter:addArticles', async (event: Electron.Event, remoteParams: AddArticlesEventParamsInterface) => {
@@ -134,6 +175,19 @@ class Communication {
     //     data
     //   });
     // });
+  }
+
+  handler: any;
+
+  contextMenuOfTermEvent$() {
+    this.createEvent('hamter:contextMenuOfTerm', (event: Electron.Event) => {
+      clearTimeout(this.handler);
+      this.handler = setTimeout(() => {
+        const win = BrowserWindow.fromWebContents(event.sender);
+        this.menuList['contextMenuOfTerm'].popup(win);
+      }, 200);
+
+    });
   }
 }
 

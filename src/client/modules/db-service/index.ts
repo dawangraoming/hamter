@@ -134,6 +134,10 @@ class DBService {
     }
   }
 
+  renameArticles(params){
+
+  }
+
 }
 
 const dbService = new DBService();

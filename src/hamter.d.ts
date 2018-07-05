@@ -5,6 +5,7 @@
 ///<reference path="../node_modules/electron/electron.d.ts"/>
 
 export declare namespace Hamter {
+
   type HamterAsyncCallbackMethod = 'hamter:_HamterCallbackMethod';
   // 获取分类与关系
   type GetTermsAndRelationships = 'hamter:getTermsAndRelationships';
@@ -16,15 +17,17 @@ export declare namespace Hamter {
   // 删除分类
   type RemoveTerms = 'hamter:removeTerms';
   // 添加内容
-  type AddArrticles = 'hamter:addArticles';
+  type AddArticles = 'hamter:addArticles';
 
+  type contextMenuOfTerm = 'hamter:contextMenuOfTerm';
 
   type IpcType = HamterAsyncCallbackMethod
     | GetTermsAndRelationships
     | GetArticlesOfTerm
     | AddTerms
     | RemoveTerms
-    | AddArrticles;
+    | AddArticles
+    | contextMenuOfTerm;
 
   type TermType = 'category' | 'tag';
 
@@ -86,6 +89,11 @@ export declare namespace Hamter {
 
   interface RemoveArticlesParams {
     articleId: number[] | number;
+  }
+
+  interface RenameTermParams {
+    term_id: number;
+    term_name: string;
   }
 
   interface TermInterface {

@@ -25,8 +25,9 @@
       align-items: center;
       cursor: pointer;
       margin: 1px 0;
+      border: 1px solid transparent;
 
-      &.categories-list-item-selected {
+      &.categories-list-item-opened {
         background-color: $COLOR_FOCUS;
         color: $COLOR_FONT_FOCUS;
         .category-count {
@@ -34,8 +35,14 @@
         }
       }
 
+      &.categories-list-item-selected {
+        &, &:hover {
+          background-color: $COLOR_BUTTON_HOVER;
+        }
+      }
+
       &:hover {
-        background-color: #35383D;
+        background-color: rgba($COLOR_BUTTON_HOVER, 0.8);
       }
       &::before {
         font-size: 16px;
@@ -71,6 +78,31 @@
         font-family: "PingFang SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
         cursor: pointer;
       }
+    }
+  }
+}
+
+.categories-context-menu {
+  position: fixed;
+  width: 150px;
+  background-color: $COLOR_BG_SUB;
+  box-shadow: 0 0 10px $COLOR_BG_MAIN;
+
+  > button {
+    display: block;
+    width: 100%;
+    line-height: 24px;
+    margin: 10px 0;
+    background-color: $COLOR_BG_SUB;
+    color: $COLOR_FONT_MAIN;
+    border: none;
+    outline: none;
+    text-align: left;
+    padding-left: 10px;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: $COLOR_BUTTON_HOVER;
     }
   }
 }
