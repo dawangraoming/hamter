@@ -134,8 +134,9 @@ class DBService {
     }
   }
 
-  renameArticles(params){
-
+  async renameTerm(params: Hamter.RenameTermParams) {
+    await this.db.run(`UPDATE terms SET term_name = ? WHERE term_id = ?`, params.term_name, params.term_id);
+    return params;
   }
 
 }

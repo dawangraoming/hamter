@@ -17,8 +17,8 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    maxWidth: 800,
-    maxHeight: 600,
+    // maxWidth: 800,
+    // maxHeight: 600,
     minWidth: 400,
     minHeight: 300,
     frame: false,
@@ -29,7 +29,10 @@ function createWindow() {
     }
   });
 
-  console.log(app.getPath('userData'));
+  // console.log(app.getPath('userData'));
+  if (IS_DEV) {
+    BrowserWindow.addDevToolsExtension('/Users/xueyangchu/Library/Application Support/Google/Chrome/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.15.2_0');
+  }
 
   // mainWindow.loadURL(IS_DEV ? 'http://localhost:4200' : join(__dirname, '../views', 'index.html'));
   mainWindow.loadURL('http://localhost:4200');

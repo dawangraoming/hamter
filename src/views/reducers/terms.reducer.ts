@@ -63,6 +63,23 @@ export function reducer(state: TermsState = initialState, action: TermsActions) 
         renameId: 0,
       };
 
+    case TermTypes.RenameSuccess:
+      const terms = state.terms.map(item => {
+        const {term_name, term_id} = action.payload;
+        if (item.term_id === term_id) {
+          return {
+            ...item,
+            term_name: term_name
+          };
+        } else {
+          return item;
+        }
+      });
+      return {
+        ...state,
+        terms
+      };
+
 
     case TermTypes.TermsReset:
       return initialState;

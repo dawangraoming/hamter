@@ -35,7 +35,7 @@
                    #inputCategoryName
                    [attr.data-id]="item.term_id"
                    [value]="item.term_name"
-                   (blur)="renameTermCompletedMethod($event)"
+                   (keyup)="renameInputKeyUpMethod($event)"
                    [hidden]="renameTermId !== item.term_id"/>
             <span class="category-count">{{item.term_count}}</span>
           </div>

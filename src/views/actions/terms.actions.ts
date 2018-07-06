@@ -83,7 +83,15 @@ export class TermRename implements Action {
 export class TermRenameCompleted implements Action {
   readonly type = TermTypes.RenameCompleted;
 
-  constructor() {
+  constructor(public payload: Hamter.RenameTermParams) {
+  }
+}
+
+export class TermRenameSuccess implements Action {
+  readonly type = TermTypes.RenameSuccess;
+
+  constructor(public payload: Hamter.RenameTermParams) {
+
   }
 }
 
@@ -100,6 +108,7 @@ export type TermsActions = TermsAdd
   | TermsRemoveSuccess
   | TermRename
   | TermRenameCompleted
+  | TermRenameSuccess
   | ResetTermsAction;
 
 

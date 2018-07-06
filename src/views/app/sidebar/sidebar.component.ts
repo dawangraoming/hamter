@@ -18,6 +18,7 @@ export class SidebarComponent implements OnInit {
   renameTermId = 0;
   contextMenuShow = false;
   contextMenuOnTermId = 0;
+  inputCategoryNameEvent = null;
   @ViewChildren('inputCategoryName') inputList: QueryList<ElementRef>;
   contextMenuStyle = {
     left: '0',
@@ -25,7 +26,7 @@ export class SidebarComponent implements OnInit {
   };
 
   constructor(private store: Store<any>) {
-    // add event listener to close the context menu when document mouse down and window lost focus
+    // add event listener to close the context menu when document mouse down and window loses focus
     fromEvent(window, 'blur').subscribe(this.closeCtxMenuAndResetMethod.bind(this));
     fromEvent(window, 'contextmenu').subscribe(this.closeCtxMenuAndResetMethod.bind(this));
     fromEvent(document, 'click').subscribe(this.closeCtxMenuAndResetMethod.bind(this));
@@ -46,17 +47,27 @@ export class SidebarComponent implements OnInit {
     }
     // set store state
     this.store.dispatch(new TermRename({id}));
+    const inputEle = this.inputList.find(item => {
+      return parseInt((<HTMLInputElement>item.nativeElement).getAttribute('data-id'), 10) === id;
+    }).nativeElement;
+    // add an event listener to watch input and trigger the callback when it loses focus
+    this.inputCategoryNameEvent = fromEvent(inputEle, 'blur').subscribe(this.renameTermCompletedMethod.bind(this));
     // focus input element.
-    window.setTimeout(() => {
-      this.inputList.find(item => {
-        return parseInt((<HTMLInputElement>item.nativeElement).getAttribute('data-id'), 10) === id;
-      }).nativeElement.focus();
-    }, 100);
+    window.setTimeout(() => inputEle.focus(), 50);
   }
 
-  renameTermCompletedMethod(event, id) {
-    console.log(event);
-    this.store.dispatch(new TermRename({id: 0}));
+  renameTermCompletedMethod(event: Event) {
+    this.store.dispatch(new TermRenameCompleted({
+      term_id: this.renameTermId,
+      term_name: (<HTMLInputElement>event.srcElement).value
+    }));
+  }
+
+  renameInputKeyUpMethod(event: KeyboardEvent) {
+    if (event.keyCode === 13 || event.keyCode === 27) {
+      this.inputCategoryNameEvent.unsubscribe();
+      this.renameTermCompletedMethod(event);
+    }
   }
 
   closeCtxMenuAndResetMethod() {

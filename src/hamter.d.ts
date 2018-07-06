@@ -18,8 +18,8 @@ export declare namespace Hamter {
   type RemoveTerms = 'hamter:removeTerms';
   // 添加内容
   type AddArticles = 'hamter:addArticles';
-
-  type contextMenuOfTerm = 'hamter:contextMenuOfTerm';
+  // rename a term
+  type RenameTerm = 'hamter:renameTerm';
 
   type IpcType = HamterAsyncCallbackMethod
     | GetTermsAndRelationships
@@ -27,7 +27,7 @@ export declare namespace Hamter {
     | AddTerms
     | RemoveTerms
     | AddArticles
-    | contextMenuOfTerm;
+    | RenameTerm;
 
   type TermType = 'category' | 'tag';
 

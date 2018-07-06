@@ -177,16 +177,9 @@ class Communication {
     // });
   }
 
-  handler: any;
-
-  contextMenuOfTermEvent$() {
-    this.createEvent('hamter:contextMenuOfTerm', (event: Electron.Event) => {
-      clearTimeout(this.handler);
-      this.handler = setTimeout(() => {
-        const win = BrowserWindow.fromWebContents(event.sender);
-        this.menuList['contextMenuOfTerm'].popup(win);
-      }, 200);
-
+  renameTermEvent$() {
+    this.createCallbackEvent('hamter:renameTerm', async (params: Hamter.RenameTermParams) => {
+      return await this.dbService.renameTerm(params);
     });
   }
 }

@@ -6,12 +6,12 @@
 
 import {Injectable} from '@angular/core';
 import {Effect, Actions, ofType} from '@ngrx/effects';
-import {catchError, map, mergeMap} from 'rxjs/operators';
+import {catchError, map, mergeMap, switchMap} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
 
 
 import {Hamter} from '../../hamter';
-import {TermsAddSuccess, TermsLoadSuccess, TermsRemoveSuccess, TermTypes} from '../actions';
+import {TermsAddSuccess, TermsLoadSuccess, TermsRemoveSuccess, TermTypes, TermRenameSuccess, TermRename} from '../actions';
 
 import communication from '../modules/communication';
 
@@ -51,10 +51,7 @@ export class TermsEffects {
   @Effect()
   removeTerms$: Observable<any> = this.actions$.pipe(
     ofType(TermTypes.Remove),
-    map((action: any): any => {
-      console.log(action);
-      return action.payload;
-    }),
+    map((action: any): any => action.payload),
     mergeMap((params) => communication.sendEvent({
         channel: 'hamter:removeTerms',
         promise: true,
@@ -63,6 +60,21 @@ export class TermsEffects {
     ),
     map((id: number[]) => new TermsRemoveSuccess({id})),
     catchError(() => of(console.log('error')))
+  );
+
+  @Effect()
+  renameTerm$: Observable<any> = this.actions$.pipe(
+    ofType(TermTypes.RenameCompleted),
+    map((action: any): any => action.payload),
+    switchMap(params => communication.sendEvent({
+      channel: 'hamter:renameTerm',
+      promise: true,
+      params
+    })),
+    switchMap(params => [
+      new TermRenameSuccess(params),
+      new TermRename({id: 0})
+    ])
   );
 }
 
