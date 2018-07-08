@@ -13,6 +13,7 @@ import {HeaderComponent} from './header/header.component';
 import effects from '../effects';
 import {SidebarComponent} from './sidebar/sidebar.component';
 import {GalleryComponent} from './gallery/gallery.component';
+import {CategoryInputComponent} from './category-input/category-input.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import {GalleryComponent} from './gallery/gallery.component';
     AppComponent,
     HeaderComponent,
     SidebarComponent,
-    GalleryComponent
+    GalleryComponent,
+    CategoryInputComponent,
   ],
   imports: [
     BrowserModule,

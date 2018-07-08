@@ -10,4 +10,12 @@
   display: flex;
 }
 
+app-sidebar {
+  width: 182px;
+  min-width: 182px;
+  height: 100%;
+}
 
+app-gallery {
+  flex: 1;
+}

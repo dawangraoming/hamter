@@ -1,0 +1,31 @@
+/*!
+ * @author dawangraoming<admin@yeenuo.net>
+ * @date 2018/7/8
+ */
+@import "common";
+
+.context-menu {
+  position: fixed;
+  width: 150px;
+  background-color: $COLOR_BG_SUB;
+  box-shadow: 0 0 10px $COLOR_BG_MAIN;
+  z-index: 10;
+
+  > button {
+    display: block;
+    width: 100%;
+    line-height: 24px;
+    margin: 10px 0;
+    background-color: $COLOR_BG_SUB;
+    color: $COLOR_FONT_MAIN;
+    border: none;
+    outline: none;
+    text-align: left;
+    padding-left: 10px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $COLOR_BUTTON_HOVER;
+    }
+  }
+}

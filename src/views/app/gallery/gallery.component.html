@@ -1,8 +1,10 @@
 <div class="gallery-com" (drop)="dropFile($event)">
   <ul class="articles-list">
     <li *ngFor="let item of articles$ | async">
-      <span>{{item.article_name}}</span>
-      <img [src]="'file://' + item.article_local_path" alt="图片"/>
+      <div class="article-img-container">
+        <img [src]="'file://' + item.article_local_path" alt="图片"/>
+      </div>
+      <p class="article-name">{{item.article_name}}</p>
     </li>
   </ul>
 </div>

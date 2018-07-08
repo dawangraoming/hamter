@@ -44,7 +44,10 @@ export class TermsEffects {
         params
       })
     ),
-    map((data: Hamter.TermInterface[]) => new TermsAddSuccess(data)),
+    switchMap((data: Hamter.TermInterface[]) => [
+      new TermsAddSuccess(data),
+      new TermRename({id: data[0].term_id})
+    ]),
     catchError(() => of(console.log('error')))
   );
 
@@ -71,10 +74,7 @@ export class TermsEffects {
       promise: true,
       params
     })),
-    switchMap(params => [
-      new TermRenameSuccess(params),
-      new TermRename({id: 0})
-    ])
+    map(params => new TermRenameSuccess(params))
   );
 }
 

@@ -1,25 +1,24 @@
-import {Component, OnInit, ElementRef, ViewChildren, QueryList} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TermsAdd, TermsRemove, TermRename, TermRenameCompleted} from '../../actions';
 import {Store} from '@ngrx/store';
 import {Observable, fromEvent} from 'rxjs';
 import {Hamter} from '../../../hamter';
 import {getTerms, getRenameTermId} from '../../reducers';
 
+
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit {
 
   categoryName: string;
   terms$: Observable<Hamter.TermInterface[]> = this.store.select(getTerms);
-  termRenameId$: Observable<number> = this.store.select(getRenameTermId);
+  // termRenameId$: Observable<number> = this.store.select(getRenameTermId);
   renameTermId = 0;
   contextMenuShow = false;
   contextMenuOnTermId = 0;
-  inputCategoryNameEvent = null;
-  @ViewChildren('inputCategoryName') inputList: QueryList<ElementRef>;
   contextMenuStyle = {
     left: '0',
     top: '0',
@@ -37,37 +36,24 @@ export class SidebarComponent implements OnInit {
   addTermMethod() {
     this.store.dispatch(new TermsAdd({
       type: 'category',
-      names: [this.categoryName]
+      names: ['自定义分类']
     }));
   }
 
-  renameTermMethod(event, id: number) {
-    if (id === this.renameTermId) {
-      return;
-    }
+  renameTermMethod() {
+    const id = this.contextMenuOnTermId;
     // set store state
     this.store.dispatch(new TermRename({id}));
-    const inputEle = this.inputList.find(item => {
-      return parseInt((<HTMLInputElement>item.nativeElement).getAttribute('data-id'), 10) === id;
-    }).nativeElement;
-    // add an event listener to watch input and trigger the callback when it loses focus
-    this.inputCategoryNameEvent = fromEvent(inputEle, 'blur').subscribe(this.renameTermCompletedMethod.bind(this));
-    // focus input element.
-    window.setTimeout(() => inputEle.focus(), 50);
   }
 
-  renameTermCompletedMethod(event: Event) {
-    this.store.dispatch(new TermRenameCompleted({
-      term_id: this.renameTermId,
-      term_name: (<HTMLInputElement>event.srcElement).value
-    }));
-  }
-
-  renameInputKeyUpMethod(event: KeyboardEvent) {
-    if (event.keyCode === 13 || event.keyCode === 27) {
-      this.inputCategoryNameEvent.unsubscribe();
-      this.renameTermCompletedMethod(event);
+  renameTermCompletedMethod(data) {
+    if (data.hasChanged) {
+      this.store.dispatch(new TermRenameCompleted({
+        term_name: data.term_name,
+        term_id: data.term_id
+      }));
     }
+    this.store.dispatch(new TermRename({id: 0}));
   }
 
   closeCtxMenuAndResetMethod() {
@@ -83,10 +69,9 @@ export class SidebarComponent implements OnInit {
     event.preventDefault();
   }
 
-  removeTermMethod(event, id: number) {
-    if (id) {
-      this.store.dispatch(new TermsRemove({id: [id]}));
-    }
+  // remove a term
+  removeTermMethod() {
+    this.store.dispatch(new TermsRemove({id: [this.contextMenuOnTermId]}));
   }
 
   ngOnInit() {

@@ -71,9 +71,16 @@ export declare namespace Hamter {
   }
 
   interface ArticlesParams {
+    article_id?: number;
     article_name: string;
     article_local_path: string;
-    article_remote_path: string;
+    article_remote_path?: string;
+    article_width?: number;
+    article_height?: number;
+    article_size?: number;
+    article_type?: string;
+    article_created_time?: number;
+    article_added_time?: number;
   }
 
   interface AddArticlesParams {

@@ -41,7 +41,7 @@ class Communication {
   db: sqlite.Database;
   callbackChannelName = 'hamter:_HamterCallbackMethod';
   dbService = dbService.default;
-  menuList = {
+  menuList: any = {
     contextMenuOfTerm: null
   };
 

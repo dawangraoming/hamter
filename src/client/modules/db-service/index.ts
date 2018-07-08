@@ -94,8 +94,22 @@ class DBService {
     // 如果不选择目录，则设置为无目录
     const categoryId = params.categoryId && Number.isInteger(params.categoryId) ? params.categoryId : 1;
     for (const item of params.articles) {
-      const {lastID} = await this.db.run(`INSERT INTO articles (article_name, article_local_path, article_remote_path) VALUES (?,?,?)`,
-        item.article_name, item.article_local_path, item.article_remote_path);
+      const {lastID} = await this.db.run(`INSERT INTO articles (article_name,
+       article_local_path,
+        article_remote_path,
+        article_width,
+        article_height,
+        article_size,
+        article_type,
+        article_created_time) VALUES (?,?,?)`,
+        item.article_name,
+        item.article_local_path,
+        item.article_remote_path,
+        item.article_width,
+        item.article_height,
+        item.article_size,
+        item.article_type,
+        item.article_created_time);
       this.db.run(`INSERT INTO terms_relationships (article_id, term_id) VALUES (?, ?)`, lastID, categoryId);
       resultId.push(lastID);
     }

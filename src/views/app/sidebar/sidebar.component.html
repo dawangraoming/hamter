@@ -2,7 +2,7 @@
 
   <!--列表功能-->
   <div class="categories-container">
-    <dl class="categories-list">
+    <dl class="categories-list-container system-categories-list">
       <dt class="categories-list-title">系统分类</dt>
       <dd class="categories-list-item iconfont icon-home categories-list-item-opened">
         <div class="category-info">
@@ -20,37 +20,39 @@
         </div>
       </dd>
     </dl>
-    <dl class="categories-list">
-      <dt class="categories-list-title">个人分类</dt>
-      <ng-container *ngFor="let item of terms$ | async">
-        <dd class="categories-list-item iconfont icon-folder"
-            *ngIf="item.term_id !== 1"
-            [ngClass]="{'categories-list-item-selected': item.term_id === contextMenuOnTermId}"
-            (contextmenu)="showContextMenuMethod($event, item.term_id, inputCategoryName)">
-          <div class="category-info">
+    <div class="categories-list-container custom-categories-list">
+      <h6 class="categories-list-title">个人分类</h6>
+      <ul class="categories-list-scroll" (contextmenu)="showContextMenuMethod($event)">
+        <ng-container *ngFor="let item of terms$ | async">
+          <li class="categories-list-item iconfont icon-folder"
+              *ngIf="item.term_id !== 1"
+              [ngClass]="{
+              'on-selected': item.term_id === contextMenuOnTermId
+            }"
+              (contextmenu)="showContextMenuMethod($event, item.term_id)">
+            <div class="category-info">
             <span class="category-name"
-                  [hidden]="renameTermId === item.term_id">{{item.term_name}}</span>
-            <input class="category-name"
-                   placeholder="请输入分组名"
-                   #inputCategoryName
-                   [attr.data-id]="item.term_id"
-                   [value]="item.term_name"
-                   (keyup)="renameInputKeyUpMethod($event)"
-                   [hidden]="renameTermId !== item.term_id"/>
-            <span class="category-count">{{item.term_count}}</span>
-          </div>
-          <!--<span (click)="removeTermMethod(item.term_id)">删除</span>-->
-        </dd>
-      </ng-container>
-    </dl>
-    <div class="categories-context-menu" *ngIf="contextMenuShow"
-         [ngStyle]="contextMenuStyle"
-    >
-      <button>新建分类</button>
-      <button (click)="renameTermMethod($event, contextMenuOnTermId)">重命名</button>
-      <button (click)="removeTermMethod($event, contextMenuOnTermId)">删除</button>
+                  *ngIf="renameTermId !== item.term_id; else inputComponent">{{item.term_name}}</span>
+              <ng-template #inputComponent>
+                <app-category-input
+                  class="category-name-input"
+                  (nameInputCompleted)="renameTermCompletedMethod($event)"
+                  [sourceName]="item.term_name"
+                  [termId]="item.term_id"></app-category-input>
+              </ng-template>
+              <span class="category-count">{{item.term_count}}</span>
+            </div>
+          </li>
+        </ng-container>
+      </ul>
     </div>
-    <input type="text" placeholder="添加分组" [(ngModel)]="categoryName" required/>
-    <a href="javascript:void(0);" (click)="addTermMethod()">添加分组</a>
+    <div class="context-menu" *ngIf="contextMenuShow"
+         [ngStyle]="contextMenuStyle">
+      <button (click)="addTermMethod()">新建分类</button>
+      <ng-container *ngIf="contextMenuOnTermId">
+        <button (click)="renameTermMethod($event)">重命名</button>
+        <button (click)="removeTermMethod($event)">删除</button>
+      </ng-container>
+    </div>
   </div>
 </div>

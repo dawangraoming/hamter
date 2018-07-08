@@ -16,7 +16,6 @@ export class GalleryComponent implements OnInit {
   constructor(private store: Store<any>) {
   }
 
-
   addArticles(params: Hamter.AddArticlesParams) {
     this.store.dispatch(new ArticlesAdd(params));
   }
@@ -35,6 +34,7 @@ export class GalleryComponent implements OnInit {
   }
 
   ngOnInit() {
+    document.ondragover = document.ondrop = e => e.preventDefault();
   }
 
 }
