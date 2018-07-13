@@ -2,9 +2,12 @@
   <ul class="articles-list">
     <li *ngFor="let item of articles$ | async">
       <div class="article-img-container">
-        <img [src]="'file://' + item.article_local_path" alt="图片"/>
+        <img alt="图片"
+             [src]="'file://' + (item.article_thumb_path ? item.article_thumb_path : item.article_local_path )"
+             (load)="loadMethod($event, !!item.article_thumb_path)"/>
       </div>
       <p class="article-name">{{item.article_name}}</p>
     </li>
   </ul>
+  <canvas #thumbCanvas ></canvas>
 </div>

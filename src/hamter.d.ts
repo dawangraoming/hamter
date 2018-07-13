@@ -20,6 +20,7 @@ export declare namespace Hamter {
   type AddArticles = 'hamter:addArticles';
   // rename a term
   type RenameTerm = 'hamter:renameTerm';
+  type SaveThumb = 'hamter:saveThumb';
 
   type IpcType = HamterAsyncCallbackMethod
     | GetTermsAndRelationships
@@ -27,7 +28,8 @@ export declare namespace Hamter {
     | AddTerms
     | RemoveTerms
     | AddArticles
-    | RenameTerm;
+    | RenameTerm
+    | SaveThumb ;
 
   type TermType = 'category' | 'tag';
 
@@ -70,21 +72,19 @@ export declare namespace Hamter {
     id: number[];
   }
 
-  interface ArticlesParams {
-    article_id?: number;
-    article_name: string;
-    article_local_path: string;
-    article_remote_path?: string;
-    article_width?: number;
-    article_height?: number;
-    article_size?: number;
-    article_type?: string;
-    article_created_time?: number;
-    article_added_time?: number;
+  interface ArticlesBaseParams {
+    name: string;
+    path: string;
+    remotePath?: string;
+  }
+
+  interface AddArticleParams {
+    article: ArticlesBaseParams;
+    categoryId: number;
   }
 
   interface AddArticlesParams {
-    articles: ArticlesParams[];
+    articles: ArticlesBaseParams[];
     categoryId?: number;
   }
 
@@ -113,12 +113,22 @@ export declare namespace Hamter {
     onRename: boolean;
   }
 
-  interface ArticleInterface {
-    article_id: number;
+  interface ArticleInputDataInterface {
     article_name: string;
     article_local_path: string;
+    article_thumb_path: string;
     article_remote_path: string;
-    article_create_time: number;
+    article_width: number;
+    article_height: number;
+    article_size: number;
+    article_type: string;
+    article_mime: string;
+    article_created_time: number;
+  }
+
+  interface ArticleInterface extends ArticleInputDataInterface {
+    article_id: number;
+    article_added_time: number;
   }
 
   interface RelationshipsInterface {

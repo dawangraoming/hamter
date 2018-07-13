@@ -9,6 +9,9 @@ import {ipcMain, BrowserWindow, Menu, MenuItem} from 'electron';
 import * as dbService from './modules/db-service';
 import * as sqlite from 'sqlite';
 
+import {promisify} from 'util';
+import {writeFile} from 'fs';
+
 
 import {Hamter} from '../hamter';
 
@@ -180,6 +183,16 @@ class Communication {
   renameTermEvent$() {
     this.createCallbackEvent('hamter:renameTerm', async (params: Hamter.RenameTermParams) => {
       return await this.dbService.renameTerm(params);
+    });
+  }
+
+  saveThumbEvent$() {
+    this.createCallbackEvent('hamter:saveThumb', (params: any) => {
+      console.log(typeof params, Object.keys(params));
+
+      const data = params.image.replace(/^data:image\/\w+;base64,/, '');
+      const bufferData = new Buffer(data, 'base64');
+      return promisify(writeFile)(`/Users/xueyangchu/Documents/Myspace/code.nosync/test/dest1/${params.name}.png`, bufferData);
     });
   }
 }

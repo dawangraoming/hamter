@@ -3,11 +3,13 @@ CREATE TABLE IF NOT EXISTS articles(
   article_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
   article_name VARCHAR DEFAULT (''),
   article_local_path TEXT NOT NULL UNIQUE,
+  article_thumb_path TEXT UNIQUE,
   article_remote_path TEXT,
   article_width INTEGER NOT NULL,
   article_height INTEGER NOT NULL,
   article_size INTEGER NOT NULL,
   article_type VARCHAR,
+  article_mime VARCHAR,
   article_created_time DATETIME,
   article_added_time DATETIME DEFAULT (datetime('now', 'localtime'))
 );
