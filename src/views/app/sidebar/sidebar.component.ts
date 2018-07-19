@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {TermsAdd, TermsRemove, TermRename, TermRenameCompleted, ArticlesLoad, TermSelect} from '../../actions';
-import {Store} from '@ngrx/store';
+import {Store, select} from '@ngrx/store';
 import {Observable, fromEvent} from 'rxjs';
 import {Hamter} from '../../../hamter';
 import {getTerms, getRenameTermId, getSelectedTermId} from '../../reducers';
@@ -13,9 +13,9 @@ import {map} from 'rxjs/operators';
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit {
-  terms$: Observable<Hamter.TermInterface[]> = this.store.select(getTerms);
+  terms$: Observable<Hamter.TermInterface[]> = this.store.pipe(select(getTerms));
 
-  // termRenameId$: Observable<number> = this.store.select(getRenameTermId);
+  // termRenameId$: Observable<number> = this.store.pipe(select(getRenameTermId));
   renameTermId = 0;
   selectedTermId = 0;
   contextMenuShow = false;
@@ -31,8 +31,8 @@ export class SidebarComponent implements OnInit {
     fromEvent(window, 'contextmenu').subscribe(this.closeCtxMenuAndResetMethod.bind(this));
     fromEvent(document, 'click').subscribe(this.closeCtxMenuAndResetMethod.bind(this));
     // get term id on the rename state, if rename id will be 0, that means no have term on rename
-    this.store.select(getRenameTermId).subscribe((id: number) => this.renameTermId = id);
-    this.store.select(getSelectedTermId).subscribe((id: number) => this.selectedTermId = id);
+    this.store.pipe(select(getRenameTermId)).subscribe((id: number) => this.renameTermId = id);
+    this.store.pipe(select(getSelectedTermId)).subscribe((id: number) => this.selectedTermId = id);
   }
 
   get userCategoryList() {

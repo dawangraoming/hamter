@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/internal/Observable';
 import {getRenameTermId, getSelectedTermId} from '../../reducers';
-import {Store} from '@ngrx/store';
+import {Store, select} from '@ngrx/store';
 
 @Component({
   selector: 'app-sidebar-menu',
@@ -21,8 +21,8 @@ export class SidebarMenuComponent implements OnInit {
   contextMenuOnTermId = 0;
 
   constructor(private store: Store<any>) {
-    this.store.select(getRenameTermId).subscribe((id: number) => this.renameTermId = id);
-    this.store.select(getSelectedTermId).subscribe((id: number) => this.selectedTermId = id);
+    this.store.pipe(select(getRenameTermId)).subscribe((id: number) => this.renameTermId = id);
+    this.store.pipe(select(getSelectedTermId)).subscribe((id: number) => this.selectedTermId = id);
   }
 
   ngOnInit() {

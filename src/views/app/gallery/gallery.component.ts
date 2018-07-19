@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Store} from '@ngrx/store';
+import {Store, select} from '@ngrx/store';
 import {Hamter} from '../../../hamter';
 import {getArticles, getSelectedArticles, getSelectedTermId} from '../../reducers';
 import {ArticlesAdd, ArticlesRemove, ArticlesSelect, ArticlesSelectReset, ArticlesUpdate} from '../../actions';
@@ -15,8 +15,8 @@ import {getThumbPath} from '../../modules/get-thumb-path';
   styleUrls: ['./gallery.component.scss']
 })
 export class GalleryComponent implements OnInit {
-  articles$: Observable<Hamter.ArticleInterface[]> = this.store.select(getArticles);
-  articlesSelected$: Observable<Hamter.ArticleInterface[]> = this.store.select(getSelectedArticles);
+  articles$: Observable<Hamter.ArticleInterface[]> = this.store.pipe(select(getArticles));
+  articlesSelected$: Observable<Hamter.ArticleInterface[]> = this.store.pipe(select(getSelectedArticles));
   selectedTermId = 0;
   articlesSelected = [];
   thumbMaxSize = 1000;
@@ -34,8 +34,8 @@ export class GalleryComponent implements OnInit {
     fromEvent(window, 'contextmenu').subscribe(this.closeCtxMenuAndResetMethod.bind(this));
     fromEvent(document, 'click').subscribe(this.closeCtxMenuAndResetMethod.bind(this));
 
-    this.store.select(getSelectedArticles).subscribe(value => this.articlesSelected = value);
-    this.store.select(getSelectedTermId).subscribe((id: number) => this.selectedTermId = id);
+    this.store.pipe(select(getSelectedArticles)).subscribe(value => this.articlesSelected = value);
+    this.store.pipe(select(getSelectedTermId)).subscribe((id: number) => this.selectedTermId = id);
     this.getThumbPath = getThumbPath;
   }
 

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Store} from '@ngrx/store';
+import {select, Store} from '@ngrx/store';
 import {getHeaderTitle, State} from '../../reducers';
 
 @Component({
@@ -12,7 +12,7 @@ export class HeaderComponent implements OnInit {
   title$: Observable<string>;
 
   constructor(private store: Store<State>) {
-    this.title$ = this.store.select(getHeaderTitle);
+    this.title$ = this.store.pipe(select(getHeaderTitle));
   }
 
   ngOnInit() {
