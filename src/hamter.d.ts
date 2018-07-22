@@ -4,6 +4,12 @@
  */
 ///<reference path="../node_modules/electron/electron.d.ts"/>
 
+declare global {
+  interface CanvasRenderingContext2D {
+    imageSmoothingQuality: 'high';
+  }
+}
+
 export declare namespace Hamter {
 
   type HamterAsyncCallbackMethod = 'hamter:_HamterCallbackMethod';
@@ -20,7 +26,7 @@ export declare namespace Hamter {
   type AddArticles = 'hamter:addArticles';
   // rename a term
   type RenameTerm = 'hamter:renameTerm';
-  type SaveThumb = 'hamter:saveThumb';
+  type InitArticle = 'hamter:initArticle';
 
   type IpcType = HamterAsyncCallbackMethod
     | GetTermsAndRelationships
@@ -29,7 +35,7 @@ export declare namespace Hamter {
     | RemoveTerms
     | AddArticles
     | RenameTerm
-    | SaveThumb ;
+    | InitArticle ;
 
   type TermType = 'category' | 'tag';
 
@@ -78,6 +84,16 @@ export declare namespace Hamter {
     remotePath?: string;
   }
 
+  interface AddArticleToDatabaseParams {
+    article: ArticleInputDataInterface;
+    categoryId?: number;
+  }
+
+  interface AddArticlesToDatabaseParams {
+    articles: ArticleInputDataInterface[];
+    categoryId?: number;
+  }
+
   interface AddArticleParams {
     article: ArticlesBaseParams;
     categoryId: number;
@@ -92,6 +108,13 @@ export declare namespace Hamter {
     articles: ArticleInterface[];
     relationships: RelationshipsInterface[];
     terms: TermInterface[];
+  }
+
+  interface UpdateArticleWidthHeightAndThumbParams {
+    image: string;
+    id: number;
+    width: number;
+    height: number;
   }
 
   interface RemoveArticlesParams {
@@ -125,6 +148,19 @@ export declare namespace Hamter {
     article_mime: string;
     article_created_time: number;
   }
+
+  type ArticleAttr = 'article_name'
+    | 'article_local_path'
+    | 'article_thumb_path'
+    | 'article_remote_path'
+    | 'article_width'
+    | 'article_height'
+    | 'article_size'
+    | 'article_type'
+    | 'article_mime'
+    | 'article_created_time';
+
+  export type ArticleUpdate = {[P in ArticleAttr]?: any};
 
   interface ArticleInterface extends ArticleInputDataInterface {
     article_id: number;
