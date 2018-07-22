@@ -3,10 +3,11 @@
   "compilerOptions": {
     "module": "commonjs",
     "noImplicitAny": true,
+    "inlineSources": true,
     "sourceMap": true,
     "outDir": "../../dist",
     "baseUrl": ".",
     "target": "es2015",
-    "removeComments": true
+    "removeComments": false
   }
 }

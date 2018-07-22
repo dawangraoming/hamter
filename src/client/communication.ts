@@ -8,12 +8,12 @@
 import {ipcMain, BrowserWindow, Menu, MenuItem} from 'electron';
 import * as dbService from './modules/db-service';
 import * as sqlite from 'sqlite';
-
-import {promisify} from 'util';
-import {writeFile} from 'fs';
+import {v1 as uuid} from 'uuid';
 
 
 import {Hamter} from '../hamter';
+import {getImageType, getSizeAndTime, writeThumb} from './modules/image-processing';
+import * as Path from 'path';
 
 
 interface EventParamsInterface {
@@ -44,9 +44,6 @@ class Communication {
   db: sqlite.Database;
   callbackChannelName = 'hamter:_HamterCallbackMethod';
   dbService = dbService.default;
-  menuList: any = {
-    contextMenuOfTerm: null
-  };
 
   constructor() {
     this.dbService.open().then(db => this.db = db);
@@ -59,30 +56,7 @@ class Communication {
     // this.removeTermsEvent$();
     // this.addArticlesEvent$();
     // this.addGetArticlesOfTermEvent$();
-    this.createMenuList();
-  }
-
-  createMenuList() {
-    const menu = new Menu();
-    menu.append(new MenuItem({
-      label: '新建',
-      click() {
-
-      }
-    }));
-    menu.append(new MenuItem({
-      label: '重命名',
-      click() {
-        console.log('time');
-      }
-    }));
-    menu.append(new MenuItem({
-      label: '删除',
-      click() {
-
-      }
-    }));
-    this.menuList['contextMenuOfTerm'] = menu;
+    // this.createMenuList();
   }
 
   createEvent(name: Hamter.IpcType, callback: any) {
@@ -168,7 +142,31 @@ class Communication {
 
   addArticlesEvent$() {
     this.createCallbackEvent('hamter:addArticles', async (params: Hamter.AddArticlesParams) => {
-      return await this.dbService.addArticles(params);
+      const articles = [];
+      for (const item of params.articles) {
+        const {path, name, remotePath} = item;
+        // get image size, width, type and mime
+        const imageData = await Promise.all([
+          getSizeAndTime(path),
+          getImageType(path)
+        ]);
+        articles.push({
+          article_name: name,
+          article_local_path: path,
+          article_thumb_path: null,
+          article_remote_path: remotePath ? remotePath : null,
+          article_width: null,
+          article_height: null,
+          article_size: imageData[0].size,
+          article_type: imageData[1].ext,
+          article_mime: imageData[1].mime,
+          article_created_time: imageData[0].birthTime,
+        });
+      }
+      return await this.dbService.addArticles({
+        categoryId: params.categoryId,
+        articles
+      });
     });
     // ipcMain.on('hamter:addArticles', async (event: Electron.Event, remoteParams: AddArticlesEventParamsInterface) => {
     //   const {callbackId, params} = remoteParams;
@@ -186,13 +184,21 @@ class Communication {
     });
   }
 
-  saveThumbEvent$() {
-    this.createCallbackEvent('hamter:saveThumb', (params: any) => {
-      console.log(typeof params, Object.keys(params));
-
-      const data = params.image.replace(/^data:image\/\w+;base64,/, '');
-      const bufferData = new Buffer(data, 'base64');
-      return promisify(writeFile)(`/Users/xueyangchu/Documents/Myspace/code.nosync/test/dest1/${params.name}.png`, bufferData);
+  initArticleEvent$() {
+    this.createCallbackEvent('hamter:initArticle', async (params: Hamter.UpdateArticleWidthHeightAndThumbParams) => {
+      const fileName = uuid() + '.webp';
+      // get store path from database
+      const storePathOption = await this.dbService.getOption('storePath');
+      let storePath = storePathOption['option_value'];
+      storePath = Path.join(storePath, fileName);
+      // generate thumbnail image on back
+      writeThumb(params.image, storePath);
+      // update and then return a updated data
+      return await this.dbService.updateArticle(params.id, {
+        article_thumb_path: storePath,
+        article_width: params.width,
+        article_height: params.height
+      });
     });
   }
 }

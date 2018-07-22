@@ -15,9 +15,7 @@ export class GalleryComponent implements OnInit {
   articles$: Observable<Hamter.ArticleInterface[]> = this.store.select(getArticles);
 
   @ViewChild('thumbCanvas') thumbCanvas: ElementRef<HTMLCanvasElement>;
-  thumbCanvasWidth = 500;
-  thumbCanvasHeight = 400;
-  thumbMaxSize = 500;
+  thumbMaxSize = 1000;
 
   constructor(private store: Store<any>) {
   }
@@ -41,11 +39,14 @@ export class GalleryComponent implements OnInit {
   loadFile(event) {
   }
 
+  /**
+   * create thumbnail image from canvas, send base64 image to main process and generate file
+   * @param {HTMLImageElement} img
+   */
   generateThumb(img: HTMLImageElement) {
-    console.log(img.naturalWidth, img.naturalHeight);
     const naturalW = img.naturalWidth;
     const naturalH = img.naturalHeight;
-    const canvas = this.thumbCanvas.nativeElement;
+    const canvas = document.createElement('canvas');
     let width, height;
     if (naturalW >= naturalH) {
       width = this.thumbMaxSize;
@@ -57,23 +58,65 @@ export class GalleryComponent implements OnInit {
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext('2d');
+    // set the high quality of image
+    ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(img, 0, 0, width, height);
-    const dataURL = canvas.toDataURL();
-    const name = decodeURIComponent(img.src.replace(/.+\/([\S.]+)$/, '$1'));
+    const base64 = canvas.toDataURL('image/webp');
+    canvas.remove();
+    // return image base64
+    return base64;
+  }
+
+  getImageSize(img: HTMLImageElement) {
+    return {
+      width: img.naturalWidth,
+      height: img.naturalHeight
+    };
+  }
+
+  generateArticleData(img: HTMLImageElement, id: number, name: string) {
+    const base64 = this.generateThumb(img);
+    const imageSize = this.getImageSize(img);
+    // return console.log(this.getFilType(img));
     communication.sendEvent({
-      channel: 'hamter:saveThumb',
+      channel: 'hamter:initArticle',
       callback() {
       },
       params: {
-        name: name,
-        image: dataURL,
+        ...imageSize,
+        image: base64,
+        id,
+        name,
       }
     });
   }
 
-  loadMethod(e, isThumb) {
+  // getFilType(img: HTMLImageElement) {
+  //   const canvas = document.createElement('canvas');
+  //   canvas.width = img.naturalWidth;
+  //   canvas.height = img.naturalHeight;
+  //   const ctx = canvas.getContext('2d');
+  //   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  //   const uint8Array = this.convertDataURIToBinaryFF(canvas.toDataURL());
+  //   canvas.remove();
+  //   return fileType(uint8Array);
+  // }
+  //
+  //
+  // convertDataURIToBinaryFF(dataURI) {
+  //   const BASE64_MARKER = ';base64,';
+  //   const base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+  //   const raw = window.atob(dataURI.substring(base64Index));
+  //   return Uint8Array.from(Array.prototype.map.call(raw, function (x) {
+  //     return x.charCodeAt(0);
+  //   }));
+  // }
+
+
+  loadMethod(e, article) {
+    const isThumb = !!article.article_thumb_path;
     if (!isThumb) {
-      this.generateThumb(e.target);
+      this.generateArticleData(e.target, article.article_id, article.article_name);
     }
   }
 

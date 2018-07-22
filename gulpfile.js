@@ -11,6 +11,7 @@ const plumber = require('gulp-plumber');
 const clean = require('gulp-clean');
 const ts = require('gulp-typescript');
 const runSequence = require('run-sequence');
+const sourcemMaps = require('gulp-sourcemaps');
 const tsProject = ts.createProject(path.join(__dirname, 'src/client/tsconfig.json'), {
   typescript: require('typescript')
 });
@@ -41,7 +42,9 @@ const paths = {
 gulp.task('compile', () => {
   return gulp.src(paths.source)
     .pipe(plumber())
+    .pipe(sourcemMaps.init())
     .pipe(tsProject())
+    .pipe(sourcemMaps.write('.'))
     .pipe(gulp.dest(paths.output))
 });
 

@@ -31,7 +31,8 @@ function createWindow() {
 
   // console.log(app.getPath('userData'));
   if (IS_DEV) {
-    BrowserWindow.addDevToolsExtension('/Users/xueyangchu/Library/Application Support/Google/Chrome/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.15.2_0');
+    BrowserWindow.addDevToolsExtension(
+      '~/Library/Application Support/Google/Chrome/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.15.3_0');
   }
 
   // mainWindow.loadURL(IS_DEV ? 'http://localhost:4200' : join(__dirname, '../views', 'index.html'));
@@ -71,37 +72,3 @@ app.on('activate', function () {
   }
   mainWindow.show();
 });
-
-// (async function () {
-//   const db = await dbService.open();
-//
-//   communication.addEvent({
-//     channel: 'hamter:getTermsAndRelationships',
-//     async callback(event, params, done) {
-//       // 从数据库从取出关系与分类
-//       const data = await Promise.all([dbService.getTerms, dbService.getRelationships]);
-//       const termsAndRelationships = {
-//         terms: data[0],
-//         relationships: data[1]
-//       };
-//       console.log('hamter:getTermsAndRelationships', termsAndRelationships);
-//       done(termsAndRelationships);
-//     }
-//   });
-//
-//   communication.addEvent({
-//     channel: 'hamter:addTerms',
-//     async callback(event, params, done) {
-//       let names = params.terms;
-//       if (!Array.isArray(names)) {
-//         names = [names];
-//       }
-//       const data = await dbService.addTerms({
-//         names,
-//         type: params.termType
-//       });
-//       done(data);
-//     }
-//   });
-//
-// })();

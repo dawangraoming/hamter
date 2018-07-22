@@ -15,14 +15,14 @@ type AddTerms = 'hamter:addTerms';
 type IpcType = HamterAsyncCallbackMethod | GetTermsAndRelationships | AddTerms;
 
 
-
-
 class Communication {
   private _eventList: Hamter.EventListInterface = {};
   private ipcRenderer: Electron.IpcRenderer;
+  public remote: Electron.Remote;
 
   constructor() {
     this.ipcRenderer = (<any>window).require('electron').ipcRenderer;
+    this.remote = (<any>window).require('electron').remote;
 
     // 添加一个回调事件监听
     this.addEvent({
@@ -36,7 +36,20 @@ class Communication {
         }
       }
     });
+
+    // this.testSend();
   }
+
+  //
+  // testSend() {
+  //   const ws = (<any>window).testWS = new WebSocket('ws://127.0.0.1:51426');
+  //   ws.addEventListener('open', () => {
+  //     ws.send('test');
+  //   });
+  //   ws.addEventListener('message', () => {
+  //     console.log(arguments);
+  //   });
+  // }
 
   addEvent(params: Hamter.AddAndSendParamsInterface) {
     this.ipcRenderer.on(params.channel, params.callback);
@@ -50,7 +63,8 @@ class Communication {
       // 生成一个callbackId
       callbackId = Math.random().toString(16).substr(2);
       // 将params数据组装成{ callbackId: xx, params: {} }这种类型
-      sendParams.params = Object.assign({}, {params: sendParams.params}, {callbackId});
+      sendParams.params = {params: sendParams.params, callbackId};
+      // Object.assign({}, {params: sendParams.params}, {callbackId});
     }
     // promise方式
     if (sendParams.promise) {
@@ -71,7 +85,10 @@ class Communication {
     const callback = sendParams.callback;
     if (callback) {
       // 如果拥有回调，则添加到事件队列中，等完成后调用
-      sendParams.params = Object.assign({}, sendParams.params, {callbackId});
+      sendParams.params = {
+        ...sendParams.params,
+        callbackId
+      };
 
       // 如果不存在事件，则添加一次
       if (!this._eventList.hasOwnProperty(callbackId)) {

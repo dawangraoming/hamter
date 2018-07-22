@@ -4,7 +4,7 @@
       <div class="article-img-container">
         <img alt="图片"
              [src]="'file://' + (item.article_thumb_path ? item.article_thumb_path : item.article_local_path )"
-             (load)="loadMethod($event, !!item.article_thumb_path)"/>
+             (load)="loadMethod($event, item)"/>
       </div>
       <p class="article-name">{{item.article_name}}</p>
     </li>

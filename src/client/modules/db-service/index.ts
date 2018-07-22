@@ -5,19 +5,12 @@
 
 import * as sqlite from 'sqlite';
 import {join} from 'path';
-import {promisify} from 'util';
-import {mkdir} from 'fs';
 
 import {Hamter} from '../../../hamter';
-import {v1 as uuidv1} from 'uuid';
-
-
-import {generateThumb, getImageData, fileCopy} from '../image-processing';
 
 
 class DBService {
   db: sqlite.Database;
-  libraryPath = '/Users/xueyangchu/Documents/hamter library.nosync';
 
   constructor() {
   }
@@ -33,7 +26,7 @@ class DBService {
     return sql.replace('?#', arr.map(() => '?').join(','));
   }
 
-  sqlObjectParamsFormat(data: any) {
+  sqlObjectParamsFormat(data: { [propName: string]: any }): { columns: string[], valueMarks: string[], values: string[] } {
     const columns = [];
     const values = [];
     const marks = [];
@@ -45,8 +38,8 @@ class DBService {
       }
     }
     return {
-      columns: columns.join(', '),
-      valueMarks: marks.join(', '),
+      columns: columns,
+      valueMarks: marks,
       values: values
     };
   }
@@ -83,6 +76,10 @@ class DBService {
     return this.db.all(sql, params.termID);
   }
 
+  getArticleDetails(id: number) {
+    return this.db.get('SELECT * FROM articles WHERE article_id = ?', id);
+  }
+
   /**
    * 添加分类
    * @param {AddTermsParams} params
@@ -114,29 +111,37 @@ class DBService {
     return id;
   }
 
-  async addArticle(params: Hamter.AddArticleParams): Promise<number> {
-    const {path, name, remotePath} = params.article;
-    const sqlParams: Hamter.ArticleInputDataInterface = {
-      article_name: name,
-      article_local_path: path,
-      article_thumb_path: null,
-      article_remote_path: remotePath ? remotePath : '',
-      article_width: 0,
-      article_height: 0,
-      article_size: 0,
-      article_type: '',
-      article_mime: '',
-      article_created_time: 0,
-    };
-    const formatSql = this.sqlObjectParamsFormat(sqlParams);
+  /**
+   * add an article to database
+   * @param {Hamter.AddArticleParams} params
+   * @return {Promise<number>}
+   */
+  async addArticle(params: Hamter.AddArticleToDatabaseParams): Promise<number> {
+    const formatSql = this.sqlObjectParamsFormat(params.article);
     // insert data to database
-    const {lastID} = await this.db.run(`INSERT INTO articles (${formatSql.columns}) VALUES (${formatSql.valueMarks})`, formatSql.values);
+    const {lastID} = await this.db.run(
+      `INSERT INTO articles (${formatSql.columns.join(', ')}) VALUES (${formatSql.valueMarks.join(', ')})`,
+      formatSql.values);
     // insert id which has been inserted to relationship table
     this.db.run(`INSERT INTO terms_relationships (article_id, term_id) VALUES (?, ?)`, lastID, params.categoryId);
     return lastID;
   }
 
-  async addArticles(params: Hamter.AddArticlesParams): Promise<Hamter.AddArticlesCallbackParams> {
+
+  async updateArticle(id: number, data: Hamter.ArticleUpdate) {
+    const {columns, values} = this.sqlObjectParamsFormat(data);
+    let sqlStr = '', i = 0;
+    for (i; i < columns.length; i++) {
+      sqlStr += `${columns[i]} = ?`;
+      if (i < columns.length - 1) {
+        sqlStr += ',';
+      }
+    }
+    await this.db.run(`UPDATE articles SET ${sqlStr} WHERE article_id = ?`, [...values, id]);
+    return this.getArticleDetails(id);
+  }
+
+  async addArticles(params: Hamter.AddArticlesToDatabaseParams): Promise<Hamter.AddArticlesCallbackParams> {
     const resultId = [];
     // 如果不选择目录，则设置为无目录
     const categoryId = params.categoryId && Number.isInteger(params.categoryId) ? params.categoryId : 1;
@@ -182,6 +187,33 @@ class DBService {
   async renameTerm(params: Hamter.RenameTermParams) {
     await this.db.run(`UPDATE terms SET term_name = ? WHERE term_id = ?`, params.term_name, params.term_id);
     return params;
+  }
+
+  /**
+   * set one option of options table
+   * @param {string} key
+   * @param {string} value
+   * @return {Promise<any>}
+   */
+  setOption(key: string, value: string) {
+    return this.db.get('REPLACE INTO options VALUES (? , ?)', [key, value]);
+  }
+
+  /**
+   * get one option of options table
+   * @param {string} key
+   * @return {Promise<any>}
+   */
+  getOption(key: string) {
+    return this.db.get('SELECT * FROM options WHERE option_name = ?', key);
+  }
+
+  /**
+   * get all options of options table
+   * @return {Promise<any>}
+   */
+  getAllOptions() {
+    return this.db.get('SELECT * FROM options');
   }
 
 }
