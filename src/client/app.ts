@@ -7,7 +7,8 @@ import {BrowserWindow, app} from 'electron';
 import {IS_DEV} from './modules/env-check';
 import {join} from 'path';
 import './communication';
-import dbService from './modules/db-service';
+import {readFileSync} from 'fs';
+
 
 let mainWindow: BrowserWindow;
 // 判断是否退出行为的变量
@@ -31,8 +32,10 @@ function createWindow() {
 
   // console.log(app.getPath('userData'));
   if (IS_DEV) {
-    BrowserWindow.addDevToolsExtension(
-      '~/Library/Application Support/Google/Chrome/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.15.3_0');
+    const devConfig = JSON.parse(readFileSync(join(__dirname, '../../', 'hamter.config.json'), {encoding: 'utf-8'}));
+    for (const value of devConfig.devToolsExtensions) {
+      BrowserWindow.addDevToolsExtension(value);
+    }
   }
 
   // mainWindow.loadURL(IS_DEV ? 'http://localhost:4200' : join(__dirname, '../views', 'index.html'));

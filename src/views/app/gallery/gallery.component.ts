@@ -3,7 +3,7 @@ import {Observable} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {Hamter} from '../../../hamter';
 import {getArticles} from '../../reducers';
-import {ArticlesAdd} from '../../actions';
+import {ArticlesAdd, ArticlesUpdate} from '../../actions';
 import communication from '../../modules/communication';
 
 @Component({
@@ -26,7 +26,6 @@ export class GalleryComponent implements OnInit {
 
   dropFile(event: DragEvent) {
     const files = event.dataTransfer.files;
-    console.log(files);
     const articles = Array.from(files).map(item => {
       return {
         name: item.name,
@@ -34,9 +33,6 @@ export class GalleryComponent implements OnInit {
       };
     });
     this.addArticles({articles, categoryId: 1});
-  }
-
-  loadFile(event) {
   }
 
   /**
@@ -80,7 +76,8 @@ export class GalleryComponent implements OnInit {
     // return console.log(this.getFilType(img));
     communication.sendEvent({
       channel: 'hamter:initArticle',
-      callback() {
+      callback: (e, data) => {
+        this.store.dispatch(new ArticlesUpdate(data instanceof Array ? data : [data]));
       },
       params: {
         ...imageSize,
