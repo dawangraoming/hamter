@@ -1,6 +1,8 @@
 <div class="gallery-com" (drop)="dropFile($event)">
   <ul class="articles-list">
-    <li *ngFor="let item of articles$ | async">
+    <li class="article-item" *ngFor="let item of articles$ | async"
+        [ngClass]="{'article-selected': item.selected}"
+        (click)="selectArticles(item.article_id)">
       <div class="article-img-container">
         <img alt="图片"
              [src]="'file://' + (item.article_thumb_path ? item.article_thumb_path : item.article_local_path )"
@@ -9,5 +11,6 @@
       <p class="article-name">{{item.article_name}}</p>
     </li>
   </ul>
-  <canvas #thumbCanvas ></canvas>
+  <canvas #thumbCanvas></canvas>
+
 </div>

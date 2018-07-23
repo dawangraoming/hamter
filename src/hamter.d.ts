@@ -24,9 +24,13 @@ export declare namespace Hamter {
   type RemoveTerms = 'hamter:removeTerms';
   // 添加内容
   type AddArticles = 'hamter:addArticles';
+  // remove articles
+  type RemoveArticles = 'hamter:removeArticles';
   // rename a term
   type RenameTerm = 'hamter:renameTerm';
+  // init article include generate thumb and get size
   type InitArticle = 'hamter:initArticle';
+
 
   type IpcType = HamterAsyncCallbackMethod
     | GetTermsAndRelationships
@@ -34,6 +38,7 @@ export declare namespace Hamter {
     | AddTerms
     | RemoveTerms
     | AddArticles
+    | RemoveArticles
     | RenameTerm
     | InitArticle ;
 
@@ -126,6 +131,10 @@ export declare namespace Hamter {
     term_name: string;
   }
 
+  interface SelectArticlesParams {
+    articleId: number[];
+  }
+
   interface TermInterface {
     term_id: number;
     term_name: string;
@@ -139,6 +148,7 @@ export declare namespace Hamter {
   interface ArticleInputDataInterface {
     article_name: string;
     article_local_path: string;
+    article_source_file_path: string;
     article_thumb_path: string;
     article_remote_path: string;
     article_width: number;
@@ -151,6 +161,7 @@ export declare namespace Hamter {
 
   type ArticleAttr = 'article_name'
     | 'article_local_path'
+    | 'article_source_file_path'
     | 'article_thumb_path'
     | 'article_remote_path'
     | 'article_width'
@@ -165,6 +176,7 @@ export declare namespace Hamter {
   interface ArticleInterface extends ArticleInputDataInterface {
     article_id: number;
     article_added_time: number;
+    selected?: boolean;
   }
 
   interface RelationshipsInterface {

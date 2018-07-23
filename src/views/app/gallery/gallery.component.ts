@@ -2,8 +2,8 @@ import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {Hamter} from '../../../hamter';
-import {getArticles} from '../../reducers';
-import {ArticlesAdd, ArticlesUpdate} from '../../actions';
+import {getArticles, getSelectedArticles} from '../../reducers';
+import {ArticlesAdd, ArticlesRemove, ArticlesSelect, ArticlesUpdate} from '../../actions';
 import communication from '../../modules/communication';
 
 @Component({
@@ -13,6 +13,7 @@ import communication from '../../modules/communication';
 })
 export class GalleryComponent implements OnInit {
   articles$: Observable<Hamter.ArticleInterface[]> = this.store.select(getArticles);
+  articlesSelected$: Observable<number[]> = this.store.select(getSelectedArticles);
 
   @ViewChild('thumbCanvas') thumbCanvas: ElementRef<HTMLCanvasElement>;
   thumbMaxSize = 1000;
@@ -22,6 +23,14 @@ export class GalleryComponent implements OnInit {
 
   addArticles(params: Hamter.AddArticlesParams) {
     this.store.dispatch(new ArticlesAdd(params));
+  }
+
+  removeArticles(params: Hamter.RemoveArticlesParams) {
+    this.store.dispatch(new ArticlesRemove(params.articleId));
+  }
+
+  selectArticles(articleId: number | number[]) {
+    this.store.dispatch(new ArticlesSelect({articleId: articleId instanceof Array ? articleId : [articleId]}));
   }
 
   dropFile(event: DragEvent) {
@@ -44,6 +53,7 @@ export class GalleryComponent implements OnInit {
     const naturalH = img.naturalHeight;
     const canvas = document.createElement('canvas');
     let width, height;
+    // set output image's width and height
     if (naturalW >= naturalH) {
       width = this.thumbMaxSize;
       height = this.thumbMaxSize / naturalW * naturalH;
@@ -87,28 +97,6 @@ export class GalleryComponent implements OnInit {
       }
     });
   }
-
-  // getFilType(img: HTMLImageElement) {
-  //   const canvas = document.createElement('canvas');
-  //   canvas.width = img.naturalWidth;
-  //   canvas.height = img.naturalHeight;
-  //   const ctx = canvas.getContext('2d');
-  //   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-  //   const uint8Array = this.convertDataURIToBinaryFF(canvas.toDataURL());
-  //   canvas.remove();
-  //   return fileType(uint8Array);
-  // }
-  //
-  //
-  // convertDataURIToBinaryFF(dataURI) {
-  //   const BASE64_MARKER = ';base64,';
-  //   const base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
-  //   const raw = window.atob(dataURI.substring(base64Index));
-  //   return Uint8Array.from(Array.prototype.map.call(raw, function (x) {
-  //     return x.charCodeAt(0);
-  //   }));
-  // }
-
 
   loadMethod(e, article) {
     const isThumb = !!article.article_thumb_path;

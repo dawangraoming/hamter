@@ -9,11 +9,13 @@ import {ArticlesActions, ArticlesTypes} from '../actions';
 
 export interface ArticlesState {
   articles: Hamter.ArticleInterface[];
+  articlesSelect: number[];
   loaded: boolean;
 }
 
 const initialState: ArticlesState = {
   articles: [],
+  articlesSelect: [],
   loaded: false
 };
 
@@ -37,7 +39,7 @@ export function reducer(state: ArticlesState = initialState, action: ArticlesAct
         ...state,
         articles: state.articles.filter(item => {
           // 将删除成功的数据，从列表中删除
-          for (let index = 0; index < idList.length; index++) {
+          for (let index = (idList.length - 1); index > -1; index--) {
             if (idList[index] === item.article_id) {
               // 匹配到内容，将其从数组中剔除
               idList.splice(index, 1);
@@ -52,7 +54,7 @@ export function reducer(state: ArticlesState = initialState, action: ArticlesAct
       const list = [...action.payload];
       const articles = state.articles.map(oldItem => {
         // 将新数据循环匹配旧数据，当遇到ID相同时，进行合并操作
-        for (let i = 0; i < list.length; i++) {
+        for (let i = (list.length - 1); i > -1; i--) {
           const newItem = list[i];
           if (oldItem.article_id === newItem.article_id) {
             // 将新数据覆盖旧数据，并从循环队列中删除，下次不再匹配
@@ -64,6 +66,28 @@ export function reducer(state: ArticlesState = initialState, action: ArticlesAct
       return {
         ...state,
         articles
+      };
+
+    case ArticlesTypes.ArticlesSelect:
+      const articleIdList = [...action.payload.articleId];
+      return {
+        ...state,
+        articles: state.articles.map(item => {
+          for (let i = (articleIdList.length - 1); i > -1; i--) {
+            if (item.article_id === articleIdList[i]) {
+              articleIdList.splice(i, 1);
+              return {
+                ...item,
+                selected: true
+              };
+            }
+          }
+          return {
+            ...item,
+            selected: false
+          };
+        }),
+        articlesSelect: [...action.payload.articleId]
       };
 
     default:
