@@ -56,7 +56,7 @@ export class ArticlesAddSuccess implements Action {
 export class ArticlesRemove implements Action {
   readonly type = ArticlesTypes.ArticlesRemove;
 
-  constructor(public payload: number[] | number) {
+  constructor(public payload:  Hamter.RemoveArticlesParams) {
   }
 }
 

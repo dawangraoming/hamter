@@ -123,7 +123,7 @@ export declare namespace Hamter {
   }
 
   interface RemoveArticlesParams {
-    articleId: number[] | number;
+    articleId: number[];
   }
 
   interface RenameTermParams {

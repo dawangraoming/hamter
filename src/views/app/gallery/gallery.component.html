@@ -1,8 +1,9 @@
-<div class="gallery-com" (drop)="dropFile($event)">
+<div class="gallery-com" (drop)="dropFile($event)" (contextmenu)="showContextMenuMethod($event)">
   <ul class="articles-list">
     <li class="article-item" *ngFor="let item of articles$ | async"
         [ngClass]="{'article-selected': item.selected}"
-        (click)="selectArticles(item.article_id)">
+        (click)="selectArticles(item.article_id)"
+        (contextmenu)="selectArticles(item.article_id)">
       <div class="article-img-container">
         <img alt="图片"
              [src]="'file://' + (item.article_thumb_path ? item.article_thumb_path : item.article_local_path )"
@@ -11,6 +12,13 @@
       <p class="article-name">{{item.article_name}}</p>
     </li>
   </ul>
-  <canvas #thumbCanvas></canvas>
-
+  <div class="context-menu" *ngIf="contextMenuShow"
+       [ngStyle]="contextMenuStyle">
+    <ng-container *ngIf="articlesSelected; else nothing">
+      <button (click)="removeArticles($event)">删除</button>
+    </ng-container>
+    <ng-template #nothing>
+      <span>什么都没有啦</span>
+    </ng-template>
+  </div>
 </div>

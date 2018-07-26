@@ -10,7 +10,7 @@ import {catchError, map, mergeMap, switchMap, startWith} from 'rxjs/operators';
 
 
 import {Hamter} from '../../hamter';
-import {ArticlesAddSuccess, ArticlesLoadSuccess, ArticlesTypes, TermsLoadSuccess} from '../actions';
+import {ArticlesAddSuccess, ArticlesLoadSuccess, ArticlesRemoveSuccess, ArticlesTypes, TermsLoadSuccess} from '../actions';
 
 import communication from '../modules/communication';
 import {Action} from '@ngrx/store';
@@ -34,6 +34,18 @@ export class ArticlesEffects {
       new TermsLoadSuccess(params.terms),
       new ArticlesAddSuccess(params.articles)
     ])
+  );
+
+  @Effect()
+  removeArticles$: Observable<Action> = this.actions$.pipe(
+    ofType(ArticlesTypes.ArticlesRemove),
+    map((action: any): any => action.payload),
+    mergeMap((params) => communication.sendEvent({
+      channel: 'hamter:removeArticles',
+      promise: true,
+      params
+    })),
+    map((params) => new ArticlesRemoveSuccess(params))
   );
 
 

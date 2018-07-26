@@ -5,6 +5,7 @@ import {Hamter} from '../../../hamter';
 import {getArticles, getSelectedArticles} from '../../reducers';
 import {ArticlesAdd, ArticlesRemove, ArticlesSelect, ArticlesUpdate} from '../../actions';
 import communication from '../../modules/communication';
+import {fromEvent} from 'rxjs/index';
 
 @Component({
   selector: 'app-gallery',
@@ -14,25 +15,50 @@ import communication from '../../modules/communication';
 export class GalleryComponent implements OnInit {
   articles$: Observable<Hamter.ArticleInterface[]> = this.store.select(getArticles);
   articlesSelected$: Observable<number[]> = this.store.select(getSelectedArticles);
-
-  @ViewChild('thumbCanvas') thumbCanvas: ElementRef<HTMLCanvasElement>;
+  articlesSelected = [];
   thumbMaxSize = 1000;
+  contextMenuShow = false;
+  contextMenuStyle = {
+    left: '0',
+    top: '0',
+  };
 
   constructor(private store: Store<any>) {
+    // add event listener to close the context menu when document mouse down and window loses focus
+    fromEvent(window, 'blur').subscribe(this.closeCtxMenuAndResetMethod.bind(this));
+    fromEvent(window, 'contextmenu').subscribe(this.closeCtxMenuAndResetMethod.bind(this));
+    fromEvent(document, 'click').subscribe(this.closeCtxMenuAndResetMethod.bind(this));
+
+    this.store.select(getSelectedArticles).subscribe(value => this.articlesSelected = value);
   }
 
+  /**
+   * add articles;
+   * @param {Hamter.AddArticlesParams} params
+   */
   addArticles(params: Hamter.AddArticlesParams) {
     this.store.dispatch(new ArticlesAdd(params));
   }
 
-  removeArticles(params: Hamter.RemoveArticlesParams) {
-    this.store.dispatch(new ArticlesRemove(params.articleId));
+  /**
+   * remove articles
+   */
+  removeArticles() {
+    this.store.dispatch(new ArticlesRemove({articleId: this.articlesSelected}));
   }
 
+  /**
+   * select articles
+   * @param {number | number[]} articleId
+   */
   selectArticles(articleId: number | number[]) {
-    this.store.dispatch(new ArticlesSelect({articleId: articleId instanceof Array ? articleId : [articleId]}));
+    this.store.dispatch(new ArticlesSelect({articleId:  Array.isArray(articleId) ? articleId : [articleId]}));
   }
 
+  /**
+   * support drag file to add articles
+   * @param {DragEvent} event
+   */
   dropFile(event: DragEvent) {
     const files = event.dataTransfer.files;
     const articles = Array.from(files).map(item => {
@@ -80,6 +106,12 @@ export class GalleryComponent implements OnInit {
     };
   }
 
+  /**
+   * generate thumbnail by canvas, get image real width and height
+   * @param {HTMLImageElement} img
+   * @param {number} id
+   * @param {string} name
+   */
   generateArticleData(img: HTMLImageElement, id: number, name: string) {
     const base64 = this.generateThumb(img);
     const imageSize = this.getImageSize(img);
@@ -87,7 +119,7 @@ export class GalleryComponent implements OnInit {
     communication.sendEvent({
       channel: 'hamter:initArticle',
       callback: (e, data) => {
-        this.store.dispatch(new ArticlesUpdate(data instanceof Array ? data : [data]));
+        this.store.dispatch(new ArticlesUpdate(Array.isArray(data) ? data : [data]));
       },
       params: {
         ...imageSize,
@@ -98,11 +130,28 @@ export class GalleryComponent implements OnInit {
     });
   }
 
-  loadMethod(e, article) {
+  /**
+   * image load method, call generateArticleData function if image is first load
+   * @param e
+   * @param {Hamter.ArticleInterface} article
+   */
+  loadMethod(e, article: Hamter.ArticleInterface) {
     const isThumb = !!article.article_thumb_path;
     if (!isThumb) {
       this.generateArticleData(e.target, article.article_id, article.article_name);
     }
+  }
+
+  showContextMenuMethod(event: MouseEvent) {
+    this.contextMenuStyle.left = event.x + 'px';
+    this.contextMenuStyle.top = event.y + 'px';
+    this.contextMenuShow = true;
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
+  closeCtxMenuAndResetMethod() {
+    this.contextMenuShow = false;
   }
 
   ngOnInit() {

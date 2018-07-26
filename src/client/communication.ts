@@ -12,7 +12,7 @@ import {v1 as uuid} from 'uuid';
 
 
 import {Hamter} from '../hamter';
-import {getImageType, getSizeAndTime, writeThumb} from './modules/image-processing';
+import {getImageType, getSizeAndTime, convertBase64ToFile, convertPsdToPng} from './modules/image-processing';
 import * as Path from 'path';
 
 
@@ -130,53 +130,8 @@ class Communication {
     this.createCallbackEvent('hamter:removeTerms', async (params: Hamter.RemoveTermsOrArticlesParams) => {
       return await this.dbService.removeTerms(params);
     });
-    // ipcMain.on('hamter:removeTerms', async (event: Electron.Event, remoteParams: RemoveTermsEventParamsInterface) => {
-    //   const {callbackId, params} = remoteParams;
-    //   const data = await this.dbService.removeTerms(params);
-    //   event.sender.send(this.callbackChannelName, {
-    //     callbackId,
-    //     data
-    //   });
-    // });
   }
 
-  addArticlesEvent$() {
-    this.createCallbackEvent('hamter:addArticles', async (params: Hamter.AddArticlesParams) => {
-      const articles = [];
-      for (const item of params.articles) {
-        const {path, name, remotePath} = item;
-        // get image size, width, type and mime
-        const imageData = await Promise.all([
-          getSizeAndTime(path),
-          getImageType(path)
-        ]);
-        articles.push({
-          article_name: name,
-          article_local_path: path,
-          article_thumb_path: null,
-          article_remote_path: remotePath ? remotePath : null,
-          article_width: null,
-          article_height: null,
-          article_size: imageData[0].size,
-          article_type: imageData[1].ext,
-          article_mime: imageData[1].mime,
-          article_created_time: imageData[0].birthTime,
-        });
-      }
-      return await this.dbService.addArticles({
-        categoryId: params.categoryId,
-        articles
-      });
-    });
-    // ipcMain.on('hamter:addArticles', async (event: Electron.Event, remoteParams: AddArticlesEventParamsInterface) => {
-    //   const {callbackId, params} = remoteParams;
-    //   const data = await this.dbService.addArticles(params);
-    //   event.sender.send(this.callbackChannelName, {
-    //     callbackId,
-    //     data
-    //   });
-    // });
-  }
 
   renameTermEvent$() {
     this.createCallbackEvent('hamter:renameTerm', async (params: Hamter.RenameTermParams) => {
@@ -184,15 +139,64 @@ class Communication {
     });
   }
 
+  addArticlesEvent$() {
+    this.createCallbackEvent('hamter:addArticles', async (params: Hamter.AddArticlesParams) => {
+      const articles = [];
+      for (const item of params.articles) {
+        const {path, name, remotePath} = item;
+        // get image's type and mime
+        const imageType = await getImageType(path);
+        // generate a image file if file not a image which is like psd
+        let distPath;
+        if (imageType.ext === 'psd') {
+          const fileName = uuid() + '.png';
+          // get store path from database
+          const storePath = await this.dbService.getOption('storePath');
+          distPath = Path.join(storePath, fileName);
+          // generate a image from psd file
+          await convertPsdToPng(path, distPath);
+        }
+        // get image's size and width
+        const imageData = await getSizeAndTime(path);
+        articles.push({
+          article_name: name,
+          article_local_path: distPath ? distPath : path,
+          article_source_file_path: path,
+          article_thumb_path: null,
+          article_remote_path: remotePath ? remotePath : null,
+          article_width: null,
+          article_height: null,
+          article_size: imageData.size,
+          article_type: imageType.ext,
+          article_mime: imageType.mime,
+          article_created_time: imageData.birthTime,
+        });
+      }
+      return await this.dbService.addArticles({
+        categoryId: params.categoryId,
+        articles
+      });
+    });
+  }
+
+  removeArticlesEvent$() {
+    this.createCallbackEvent('hamter:removeArticles', async (params: Hamter.RemoveArticlesParams) => {
+      const result = await this.dbService.removeArticles(params);
+      return Array.isArray(result) ? result : [result];
+    });
+  }
+
+
   initArticleEvent$() {
     this.createCallbackEvent('hamter:initArticle', async (params: Hamter.UpdateArticleWidthHeightAndThumbParams) => {
       const fileName = uuid() + '.webp';
       // get store path from database
-      const storePathOption = await this.dbService.getOption('storePath');
-      let storePath = storePathOption['option_value'];
+      let storePath = await this.dbService.getOption('storePath');
       storePath = Path.join(storePath, fileName);
       // generate thumbnail image on back
-      writeThumb(params.image, storePath);
+      convertBase64ToFile(params.image, storePath).catch(err => {
+        throw err;
+      });
       // update and then return a updated data
       return await this.dbService.updateArticle(params.id, {
         article_thumb_path: storePath,

@@ -169,19 +169,11 @@ class DBService {
   }
 
 
-  removeArticles(params: Hamter.RemoveArticlesParams) {
+  removeArticles(params: Hamter.RemoveArticlesParams): Promise<number[] | number> {
     const id = params.articleId;
-    // 如果是数组，组装成出promise数组，使用promise.all返回
-    if (Array.isArray(id)) {
-      const promiseList = [];
-      for (const articleId of id) {
-        promiseList.push(this.removeArticles.bind(this, {articleId}));
-      }
-      return Promise.all(promiseList);
-    } else {
-      return this.db.run(`DELETE FROM terms_relationships WHERE article_id = ?;
-      DELETE FROM articles WHERE article_id = ?`, id, id);
-    }
+    const sql = `DELETE FROM terms_relationships WHERE article_id IN (${id.join(',')});`
+      + `DELETE FROM articles WHERE article_id IN (${id.join(',')});`;
+    return this.db.run(sql).then(() => id);
   }
 
   async renameTerm(params: Hamter.RenameTermParams) {
@@ -202,10 +194,10 @@ class DBService {
   /**
    * get one option of options table
    * @param {string} key
-   * @return {Promise<any>}
+   * @return {Promise<string>}
    */
-  getOption(key: string) {
-    return this.db.get('SELECT * FROM options WHERE option_name = ?', key);
+  getOption(key: string): Promise<string> {
+    return this.db.get('SELECT * FROM options WHERE option_name = ?', key).then(value => value ? value.option_value : '');
   }
 
   /**
