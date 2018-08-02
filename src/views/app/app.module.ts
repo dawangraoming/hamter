@@ -14,6 +14,8 @@ import effects from '../effects';
 import {SidebarComponent} from './sidebar/sidebar.component';
 import {GalleryComponent} from './gallery/gallery.component';
 import {CategoryInputComponent} from './category-input/category-input.component';
+import { DetailsBarComponent } from './details-bar/details-bar.component';
+import { DraggableDirective } from './draggable.directive';
 
 
 @NgModule({
@@ -23,6 +25,8 @@ import {CategoryInputComponent} from './category-input/category-input.component'
     SidebarComponent,
     GalleryComponent,
     CategoryInputComponent,
+    DetailsBarComponent,
+    DraggableDirective
   ],
   imports: [
     BrowserModule,

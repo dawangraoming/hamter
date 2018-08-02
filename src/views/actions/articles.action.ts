@@ -18,6 +18,7 @@ export enum ArticlesTypes {
   ArticlesAddSuccess = '[Articles] Add Success',
   ArticlesUpdate = '[Articles] Update',
   ArticlesSelect = '[Articles] Select',
+  ArticlesSelectReset = '[Articles] Select Reset',
   ArticlesReset = '[Articles] Reset'
 }
 
@@ -56,7 +57,7 @@ export class ArticlesAddSuccess implements Action {
 export class ArticlesRemove implements Action {
   readonly type = ArticlesTypes.ArticlesRemove;
 
-  constructor(public payload:  Hamter.RemoveArticlesParams) {
+  constructor(public payload: Hamter.RemoveArticlesParams) {
   }
 }
 
@@ -82,7 +83,15 @@ export class ResetArticlesAction implements Action {
 export class ArticlesSelect implements Action {
   readonly type = ArticlesTypes.ArticlesSelect;
 
-  constructor(public payload: Hamter.SelectArticlesParams) {
+  constructor(public payload: Hamter.ArticleInterface[]) {
+  }
+}
+
+export class ArticlesSelectReset implements Action {
+  readonly type = ArticlesTypes.ArticlesSelectReset;
+
+  constructor() {
+
   }
 }
 
@@ -94,4 +103,5 @@ export type ArticlesActions = ArticlesLoad
   | ArticlesRemove
   | ArticlesRemoveSuccess
   | ArticlesUpdate
-  | ArticlesSelect;
+  | ArticlesSelect
+  | ArticlesSelectReset;

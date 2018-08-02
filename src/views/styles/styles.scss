@@ -1,34 +1,8 @@
 @import "../assets/iconfont.css";
 @import "common";
+@import "reset";
 @import "context-menu";
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html, body {
-  user-select: none;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-body {
-  background-color: #000415;
-  color: $COLOR_FONT_SUB;
-  font-size: 12px;
-  font-family: "PingFang SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-}
-
-ul, ol {
-  list-style: none;
-}
-
-div, h1, h2, h3, h4, h5, h6, p, span, dt, dd, li {
-  cursor: default;
-}
+@import "scrollbar";
 
 .range-landscape {
   display: flex;
@@ -37,38 +11,4 @@ div, h1, h2, h3, h4, h5, h6, p, span, dt, dd, li {
 .range-vertical {
   display: flex;
   flex-direction: column;
-}
-
-::-webkit-scrollbar {
-  width: 9px; /*滚动条的宽度*/
-}
-
-::-webkit-scrollbar-track {
-  height: 105px;
-  background: #1C1C1C; /*滚动条的背景颜色*/
-  -webkit-border-radius: 5px;
-  border-radius: 5px; /*滚动条的圆角宽度*/
-}
-
-::-webkit-scrollbar-thumb {
-  background: #3F4857;
-  -webkit-box-shadow: #83b2e6;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:vertical { /*垂直滚动条的样式*/
-  background-color: #3F4857;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover { /*滚动条的hover样式*/
-  background-color: #3F4857;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:window-inactive {
-  background: #1C1C1C;
 }

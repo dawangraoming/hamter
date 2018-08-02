@@ -9,7 +9,7 @@ import {ArticlesActions, ArticlesTypes} from '../actions';
 
 export interface ArticlesState {
   articles: Hamter.ArticleInterface[];
-  articlesSelect: number[];
+  articlesSelect: Hamter.ArticleInterface[];
   loaded: boolean;
 }
 
@@ -69,12 +69,12 @@ export function reducer(state: ArticlesState = initialState, action: ArticlesAct
       };
 
     case ArticlesTypes.ArticlesSelect:
-      const articleIdList = [...action.payload.articleId];
+      const articleIdList = [...action.payload];
       return {
         ...state,
         articles: state.articles.map(item => {
           for (let i = (articleIdList.length - 1); i > -1; i--) {
-            if (item.article_id === articleIdList[i]) {
+            if (item.article_id === articleIdList[i].article_id) {
               articleIdList.splice(i, 1);
               return {
                 ...item,
@@ -87,7 +87,16 @@ export function reducer(state: ArticlesState = initialState, action: ArticlesAct
             selected: false
           };
         }),
-        articlesSelect: [...action.payload.articleId]
+        articlesSelect: [...action.payload]
+      };
+
+    case ArticlesTypes.ArticlesSelectReset:
+      return {
+        ...state,
+        articles: state.articles.map(item => {
+          return {...item, selected: false};
+        }),
+        articlesSelect: []
       };
 
     default:

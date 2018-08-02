@@ -3,9 +3,11 @@ import {Observable} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {Hamter} from '../../../hamter';
 import {getArticles, getSelectedArticles} from '../../reducers';
-import {ArticlesAdd, ArticlesRemove, ArticlesSelect, ArticlesUpdate} from '../../actions';
+import {ArticlesAdd, ArticlesRemove, ArticlesSelect, ArticlesSelectReset, ArticlesUpdate} from '../../actions';
 import communication from '../../modules/communication';
 import {fromEvent} from 'rxjs/index';
+import {getThumbPath} from '../../modules/get-thumb-path';
+
 
 @Component({
   selector: 'app-gallery',
@@ -14,7 +16,7 @@ import {fromEvent} from 'rxjs/index';
 })
 export class GalleryComponent implements OnInit {
   articles$: Observable<Hamter.ArticleInterface[]> = this.store.select(getArticles);
-  articlesSelected$: Observable<number[]> = this.store.select(getSelectedArticles);
+  articlesSelected$: Observable<Hamter.ArticleInterface[]> = this.store.select(getSelectedArticles);
   articlesSelected = [];
   thumbMaxSize = 1000;
   contextMenuShow = false;
@@ -22,6 +24,8 @@ export class GalleryComponent implements OnInit {
     left: '0',
     top: '0',
   };
+  clickFromArticle = false;
+  getThumbPath: (p: Hamter.ArticleInterface) => string;
 
   constructor(private store: Store<any>) {
     // add event listener to close the context menu when document mouse down and window loses focus
@@ -30,6 +34,7 @@ export class GalleryComponent implements OnInit {
     fromEvent(document, 'click').subscribe(this.closeCtxMenuAndResetMethod.bind(this));
 
     this.store.select(getSelectedArticles).subscribe(value => this.articlesSelected = value);
+    this.getThumbPath = getThumbPath;
   }
 
   /**
@@ -44,15 +49,15 @@ export class GalleryComponent implements OnInit {
    * remove articles
    */
   removeArticles() {
-    this.store.dispatch(new ArticlesRemove({articleId: this.articlesSelected}));
+    this.store.dispatch(new ArticlesRemove({articleId: this.articlesSelected.map(item => item.article_id)}));
   }
 
   /**
    * select articles
-   * @param {number | number[]} articleId
+   * @param {Hamter.ArticleInterface | Hamter.ArticleInterface[]} articles
    */
-  selectArticles(articleId: number | number[]) {
-    this.store.dispatch(new ArticlesSelect({articleId:  Array.isArray(articleId) ? articleId : [articleId]}));
+  selectArticles(articles: Hamter.ArticleInterface[] | Hamter.ArticleInterface) {
+    this.store.dispatch(new ArticlesSelect(Array.isArray(articles) ? articles : [articles]));
   }
 
   /**
@@ -68,6 +73,15 @@ export class GalleryComponent implements OnInit {
       };
     });
     this.addArticles({articles, categoryId: 1});
+  }
+
+  clickArticleMethod(event, articles) {
+    this.clickFromArticle = true;
+    this.selectArticles(articles);
+  }
+
+  testCallback() {
+    console.log('input test click');
   }
 
   /**
@@ -98,6 +112,7 @@ export class GalleryComponent implements OnInit {
     // return image base64
     return base64;
   }
+
 
   getImageSize(img: HTMLImageElement) {
     return {
@@ -142,6 +157,28 @@ export class GalleryComponent implements OnInit {
     }
   }
 
+  clickOnGallery() {
+    if (this.clickFromArticle) {
+    } else {
+      this.store.dispatch(new ArticlesSelectReset());
+    }
+    this.clickFromArticle = false;
+  }
+
+  rightClickOnGallery(event) {
+    if (this.clickFromArticle) {
+      this.showContextMenuMethod(event);
+    } else {
+      this.store.dispatch(new ArticlesSelectReset());
+    }
+    this.clickFromArticle = false;
+  }
+
+
+  /**
+   * show the context menu
+   * @param {MouseEvent} event
+   */
   showContextMenuMethod(event: MouseEvent) {
     this.contextMenuStyle.left = event.x + 'px';
     this.contextMenuStyle.top = event.y + 'px';

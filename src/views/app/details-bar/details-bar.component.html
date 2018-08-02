@@ -1,0 +1,39 @@
+<div class="details-bar-com">
+  <ng-container *ngIf="(articlesSelected$ | async).length < 1; else haveArticle;">
+    <div>nothing.</div>
+  </ng-container>
+
+  <ng-template #haveArticle>
+    <div class="thumb-container">
+      <img [src]="getThumbPath(firstSelectArticle)" class="thumb">
+    </div>
+    <div class="dtm-container"></div>
+    <div class="metadata-container">
+      <dl class="metadata-item">
+        <dt>尺寸：</dt>
+        <dd>600 X 800</dd>
+      </dl>
+      <dl class="metadata-item">
+        <dt>文件大小：</dt>
+        <dd>154.34KB</dd>
+      </dl>
+      <dl class="metadata-item">
+        <dt>文件类型：</dt>
+        <dd>PNG</dd>
+      </dl>
+      <dl class="metadata-item">
+        <dt>创建时间：</dt>
+        <dd>2017/06/08 15:31:05</dd>
+      </dl>
+      <span class="input-container">
+        <input placeholder="请为作品输入一个名称" value="{{firstSelectArticle.article_name}}"/>
+      </span>
+      <span class="input-container">
+        <input placeholder="Web地址" value="{{firstSelectArticle.article_remote_path}}">
+        <a class="remote-link" title="在浏览器中打开"></a>
+      </span>
+    </div>
+  </ng-template>
+
+
+</div>
