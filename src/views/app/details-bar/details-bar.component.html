@@ -9,29 +9,31 @@
     </div>
     <div class="dtm-container"></div>
     <div class="metadata-container">
-      <dl class="metadata-item">
-        <dt>尺寸：</dt>
-        <dd>600 X 800</dd>
-      </dl>
-      <dl class="metadata-item">
-        <dt>文件大小：</dt>
-        <dd>154.34KB</dd>
-      </dl>
-      <dl class="metadata-item">
-        <dt>文件类型：</dt>
-        <dd>PNG</dd>
-      </dl>
-      <dl class="metadata-item">
-        <dt>创建时间：</dt>
-        <dd>2017/06/08 15:31:05</dd>
-      </dl>
-      <span class="input-container">
-        <input placeholder="请为作品输入一个名称" value="{{firstSelectArticle.article_name}}"/>
-      </span>
-      <span class="input-container">
-        <input placeholder="Web地址" value="{{firstSelectArticle.article_remote_path}}">
-        <a class="remote-link" title="在浏览器中打开"></a>
-      </span>
+      <div class="metadata-base-data">
+        <p class="base-data-item">
+          <span class="base-data-item-key">尺寸：</span>
+          <span class="base-data-item-value">600 X 800</span>
+        </p>
+        <p class="base-data-item">
+          <span class="base-data-item-key">文件大小：</span>
+          <span class="base-data-item-value">154.34KB</span>
+        </p>
+        <p class="base-data-item">
+          <span class="base-data-item-key">文件类型：</span>
+          <span class="base-data-item-value">PNG</span>
+        </p>
+        <p class="base-data-item">
+          <span class="base-data-item-key">创建时间：</span>
+          <span class="base-data-item-value">2017/06/08 15:31:05</span>
+        </p>
+      </div>
+      <div class="metadata-input-com">
+        <input class="input-container" placeholder="请为作品输入一个名称" value="{{firstSelectArticle.article_name}}"/>
+      </div>
+      <div class="metadata-input-com metadata-input-icon">
+        <input class="input-container" placeholder="Web地址" value="{{firstSelectArticle.article_remote_path}}">
+        <a class="remote-link iconfont icon-link" title="在浏览器中打开"></a>
+      </div>
     </div>
   </ng-template>
 

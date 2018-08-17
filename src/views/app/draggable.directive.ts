@@ -13,7 +13,7 @@ export class DraggableDirective {
 
   @HostListener('mousedown', ['$event'])
   onDown() {
-    this.appDraggableOnUp();
+    // this.appDraggableOnUp();
   }
 
 }

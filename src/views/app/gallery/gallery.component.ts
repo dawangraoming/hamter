@@ -80,10 +80,6 @@ export class GalleryComponent implements OnInit {
     this.selectArticles(articles);
   }
 
-  testCallback() {
-    console.log('input test click');
-  }
-
   /**
    * create thumbnail image from canvas, send base64 image to main process and generate file
    * @param {HTMLImageElement} img

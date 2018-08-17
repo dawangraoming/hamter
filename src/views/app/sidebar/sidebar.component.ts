@@ -4,6 +4,7 @@ import {Store} from '@ngrx/store';
 import {Observable, fromEvent} from 'rxjs';
 import {Hamter} from '../../../hamter';
 import {getTerms, getRenameTermId} from '../../reducers';
+import {map} from 'rxjs/operators';
 
 
 @Component({
@@ -12,9 +13,8 @@ import {getTerms, getRenameTermId} from '../../reducers';
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit {
-
-  categoryName: string;
   terms$: Observable<Hamter.TermInterface[]> = this.store.select(getTerms);
+
   // termRenameId$: Observable<number> = this.store.select(getRenameTermId);
   renameTermId = 0;
   contextMenuShow = false;
@@ -33,6 +33,18 @@ export class SidebarComponent implements OnInit {
     this.store.select(getRenameTermId).subscribe((id: number) => this.renameTermId = id);
   }
 
+  /**
+   * count number of all articles
+   * @return {Observable<number>}
+   */
+  get countArticleNumber() {
+    return this.terms$.pipe(map(value => {
+      let count = 0;
+      value.forEach(item => count += item.term_count);
+      return count;
+    }));
+  }
+
   addTermMethod() {
     this.store.dispatch(new TermsAdd({
       type: 'category',
@@ -44,6 +56,10 @@ export class SidebarComponent implements OnInit {
     const id = this.contextMenuOnTermId;
     // set store state
     this.store.dispatch(new TermRename({id}));
+  }
+
+  selectTermMethod(id: number) {
+    // this.store.dispatch();
   }
 
   renameTermCompletedMethod(data) {
