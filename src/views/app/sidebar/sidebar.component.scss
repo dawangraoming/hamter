@@ -32,6 +32,10 @@
       &.categories-list-item-opened {
         background-color: $COLOR_FOCUS;
         color: $COLOR_FONT_FOCUS;
+
+        &:hover{
+          background-color: $COLOR_FOCUS;
+        }
         .category-count {
           color: $COLOR_FONT_FOCUS;
         }
