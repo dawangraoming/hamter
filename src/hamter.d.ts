@@ -30,6 +30,8 @@ export declare namespace Hamter {
   type RenameTerm = 'hamter:renameTerm';
   // init article include generate thumb and get size
   type InitArticle = 'hamter:initArticle';
+  // select a term
+  type SelectTerm = 'hamter:SelectTerm';
 
 
   type IpcType = HamterAsyncCallbackMethod
@@ -40,9 +42,10 @@ export declare namespace Hamter {
     | AddArticles
     | RemoveArticles
     | RenameTerm
-    | InitArticle ;
+    | InitArticle
+    | SelectTerm;
 
-  type TermType = 'category' | 'tag';
+  type TermType = 'category' | 'tag' | 'system';
 
 
   interface CommunicationParamsInterface {

@@ -11,12 +11,14 @@ export interface TermsState {
   terms: TermInterface[];
   loaded: boolean;
   renameId: number;
+  selectedId: number;
 }
 
 const initialState: TermsState = {
   terms: [],
   loaded: false,
   renameId: 0,
+  selectedId: 0
 };
 
 export function reducer(state: TermsState = initialState, action: TermsActions) {
@@ -80,6 +82,11 @@ export function reducer(state: TermsState = initialState, action: TermsActions) 
         terms
       };
 
+    case TermTypes.TermSelect:
+      return {
+        ...state,
+        selectedId: action.payload
+      };
 
     case TermTypes.TermsReset:
       return initialState;

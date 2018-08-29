@@ -4,33 +4,30 @@
   <div class="categories-container">
     <dl class="categories-list-container system-categories-list">
       <dt class="categories-list-title">系统分类</dt>
-      <dd class="categories-list-item iconfont icon-home categories-list-item-opened">
-        <div class="category-info">
-          <span class="category-name">全部</span>
-          <span class="category-count">{{countArticleNumber | async}}</span>
+      <div class="categories-list-item iconfont" *ngFor="let category of systemCategoryList | async"
+           [ngClass]="{
+             'icon-home': category.term_name === 'all',
+             'icon-folder': category.term_name === 'unclassified',
+             'icon-delete': category.term_name === 'trash',
+             'categories-list-item-opened': category.term_id === selectedTermId
+           }">
+        <div class="category-info" (click)="selectTermMethod(category.term_id)">
+          <span class="category-name">{{category.term_name}}</span>
+          <span class="category-count">{{category.term_count}}</span>
         </div>
-      </dd>
-      <dd class="categories-list-item iconfont icon-folder">
-        <div class="category-info">
-          <span class="category-name">未分类</span>
-        </div>
-      </dd>
-      <dd class="categories-list-item iconfont icon-delete">
-        <div class="category-info">
-          <span class="category-name">垃圾桶</span>
-
-        </div>
-      </dd>
+      </div>
     </dl>
     <div class="categories-list-container custom-categories-list">
       <h6 class="categories-list-title">个人分类</h6>
       <ul class="categories-list-scroll" (contextmenu)="showContextMenuMethod($event)">
-        <ng-container *ngFor="let item of terms$ | async">
+        <ng-container *ngFor="let item of userCategoryList | async">
           <li class="categories-list-item iconfont icon-folder"
               *ngIf="item.term_id !== 1"
+              (click)="selectTermMethod(item.term_id)"
               [ngClass]="{
-              'on-selected': item.term_id === contextMenuOnTermId
-            }"
+                'on-selected': item.term_id === contextMenuOnTermId,
+                'categories-list-item-opened': item.term_id === selectedTermId
+              }"
               (contextmenu)="showContextMenuMethod($event, item.term_id)">
             <div class="category-info">
             <span class="category-name"

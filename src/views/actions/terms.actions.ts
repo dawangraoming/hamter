@@ -21,6 +21,7 @@ export enum TermTypes {
   RenameSuccess = '[Terms] Rename Success',
   TermsReset = '[Terms] Reset',
   TermsResetSuccess = '[Terms] Reset Success',
+  TermSelect = '[Term] Select',
 }
 
 // load data from the database
@@ -91,7 +92,13 @@ export class TermRenameSuccess implements Action {
   readonly type = TermTypes.RenameSuccess;
 
   constructor(public payload: Hamter.RenameTermParams) {
+  }
+}
 
+export class TermSelect implements Action {
+  readonly type = TermTypes.TermSelect;
+
+  constructor(public payload: number) {
   }
 }
 
@@ -109,6 +116,7 @@ export type TermsActions = TermsAdd
   | TermRename
   | TermRenameCompleted
   | TermRenameSuccess
-  | ResetTermsAction;
+  | ResetTermsAction
+  | TermSelect;
 
 

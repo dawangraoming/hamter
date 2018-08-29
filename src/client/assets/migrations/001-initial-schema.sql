@@ -52,7 +52,9 @@ BEGIN
 	UPDATE  terms SET term_count = (SELECT count(*) FROM terms_relationships WHERE term_id = old.term_id) WHERE term_id = old.term_id;
 END;
 
-INSERT INTO terms (term_type, term_name) VALUES ('category', 'unclassified');
+INSERT INTO terms (term_type, term_name) VALUES ('system', 'all');
+INSERT INTO terms (term_type, term_name) VALUES ('system', 'unclassified');
+INSERT INTO terms (term_type, term_name) VALUES ('system', 'trash');
 
 
 -- Down

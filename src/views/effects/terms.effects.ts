@@ -11,7 +11,15 @@ import {Observable, of} from 'rxjs';
 
 
 import {Hamter} from '../../hamter';
-import {TermsAddSuccess, TermsLoadSuccess, TermsRemoveSuccess, TermTypes, TermRenameSuccess, TermRename} from '../actions';
+import {
+  TermsAddSuccess,
+  TermsLoadSuccess,
+  TermsRemoveSuccess,
+  TermTypes,
+  TermRenameSuccess,
+  TermRename,
+  ArticlesLoad
+} from '../actions';
 
 import communication from '../modules/communication';
 
@@ -24,9 +32,9 @@ export class TermsEffects {
   @Effect()
   getTermAndRelationships$: Observable<any> = this.actions$.pipe(
     ofType(TermTypes.Load),
-    mergeMap(() => communication.sendEvent({
+    mergeMap((params) => communication.sendEvent({
         channel: 'hamter:getTermsAndRelationships',
-        promise: true
+        promise: true,
       }),
     ),
     map((data: Hamter.GetTermsAndRelationshipsParams) => new TermsLoadSuccess(data.terms)),
@@ -75,6 +83,13 @@ export class TermsEffects {
       params
     })),
     map(params => new TermRenameSuccess(params))
+  );
+
+  @Effect()
+  getArticlesOfTerm$: Observable<any> = this.actions$.pipe(
+    ofType(TermTypes.TermSelect),
+    map((action: any): any => action.payload),
+    map(params => new ArticlesLoad({termID: params}))
   );
 }
 

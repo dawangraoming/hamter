@@ -67,8 +67,15 @@ class DBService {
     return this.db.all(`SELECT * FROM terms_relationships`);
   }
 
+  /**
+   * get articles from terms, if params.termId is 0 then get all articles
+   * @param {Hamter.GetArticlesOfTermParams} params
+   * @return {Promise<Hamter.ArticleInterface[]>}
+   */
   getArticlesOfTerm(params: Hamter.GetArticlesOfTermParams): Promise<Hamter.ArticleInterface[]> {
-    let sql = `SELECT * FROM articles WHERE article_id IN (SELECT article_id FROM terms_relationships WHERE term_id = ?)`;
+    let sql = params.termID > 0 ?
+      `SELECT * FROM articles WHERE article_id IN (SELECT article_id FROM terms_relationships WHERE term_id = ?)` :
+      `SELECT * FROM articles`;
     // 如果存在limit，则限定取出的数量
     if (params.limit) {
       sql += ` LIMIT ${params.limit}`;
@@ -123,7 +130,8 @@ class DBService {
       `INSERT INTO articles (${formatSql.columns.join(', ')}) VALUES (${formatSql.valueMarks.join(', ')})`,
       formatSql.values);
     // insert id which has been inserted to relationship table
-    this.db.run(`INSERT INTO terms_relationships (article_id, term_id) VALUES (?, ?)`, lastID, params.categoryId);
+    this.db.run(`INSERT INTO terms_relationships (article_id, term_id) VALUES (${lastID}, ${params.categoryId});`).catch(err => console.error(err));
+    this.db.run(`INSERT INTO terms_relationships (article_id, term_id) VALUES (${lastID}, 1)`).catch(err => console.error(err));
     return lastID;
   }
 

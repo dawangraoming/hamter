@@ -82,7 +82,7 @@ class Communication {
     // });
   }
 
-  addGetTermsAndRelationshipsEvent$() {
+  getTermsAndRelationshipsEvent$() {
     ipcMain.on('hamter:getTermsAndRelationships', async (event: Electron.Event, remoteParams: EventParamsInterface) => {
       const callbackId = remoteParams.callbackId;
       // 从数据库从取出关系与分类
@@ -100,7 +100,7 @@ class Communication {
     });
   }
 
-  addGetArticlesOfTermEvent$() {
+  getArticlesOfTermEvent$() {
     this.createCallbackEvent('hamter:getArticlesOfTerm', async (params: Hamter.GetArticlesOfTermParams) => {
       return await this.dbService.getArticlesOfTerm(params);
     });
@@ -131,7 +131,6 @@ class Communication {
       return await this.dbService.removeTerms(params);
     });
   }
-
 
   renameTermEvent$() {
     this.createCallbackEvent('hamter:renameTerm', async (params: Hamter.RenameTermParams) => {
@@ -173,7 +172,7 @@ class Communication {
         });
       }
       return await this.dbService.addArticles({
-        categoryId: params.categoryId,
+        categoryId: params.categoryId > 1 ? params.categoryId : 2, // 如果选择了全部列表，则计入未分组
         articles
       });
     });

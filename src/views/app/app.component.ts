@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {TermsLoad, ArticlesLoad} from '../actions';
+import {TermsLoad, ArticlesLoad, TermSelect} from '../actions';
 
 
 @Component({
@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
 
   getTermsAndRelationships() {
     this.store.dispatch(new TermsLoad());
-    this.store.dispatch(new ArticlesLoad({termID: 1}));
+    this.store.dispatch(new TermSelect(1));
   }
 
   ngOnInit() {
