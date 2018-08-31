@@ -37,8 +37,33 @@ export class SidebarComponent implements OnInit {
 
   get userCategoryList() {
     return this.terms$.pipe(
-      map(value => value.filter(item => item.term_type === 'category'))
+      map(value => {
+        const list = value.filter(item => item.term_type === 'category');
+        const treeObject = {};
+        for (const category of list) {
+          category.children = [];
+          const parentId = category.term_parent;
+          if (!treeObject.hasOwnProperty(parentId)) {
+            treeObject[parentId] = [];
+          }
+          treeObject[parentId].push(category);
+        }
+        return this.categoryArrayToTree(treeObject, 0);
+      })
     );
+  }
+
+  categoryArrayToTree(treeObject: { [id: string]: Hamter.TermInterface[] }, parentId: number): Hamter.TermInterface[] {
+    const result = [];
+    if (!treeObject.hasOwnProperty(parentId)) {
+      return result;
+    }
+
+    for (const item of treeObject[parentId]) {
+      item.children = this.categoryArrayToTree(treeObject, item.term_id);
+      result.push(item);
+    }
+    return result;
   }
 
   get systemCategoryList() {

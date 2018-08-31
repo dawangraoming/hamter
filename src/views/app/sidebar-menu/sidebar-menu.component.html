@@ -1,0 +1,29 @@
+<div class="categories-list-item-container" *ngFor="let item of menuTreeData">
+  <ng-container >
+    <div class="categories-list-item iconfont icon-folder"
+        *ngIf="item.term_id !== 1"
+        (click)="clickMethod(item.term_id)"
+        [ngClass]="{
+                'on-selected': item.term_id === contextMenuOnTermId,
+                'categories-list-item-opened': item.term_id === selectedTermId
+              }"
+        (contextmenu)="clickMethod($event, item.term_id)">
+      <div class="category-info">
+            <span class="category-name"
+                  *ngIf="renameTermId !== item.term_id; else inputComponent">{{item.term_name}}</span>
+        <ng-template #inputComponent>
+          <app-category-input
+            class="category-name-input"
+            (nameInputCompleted)="nameInputCompletedMethod($event)"
+            [sourceName]="item.term_name"
+            [termId]="item.term_id"></app-category-input>
+        </ng-template>
+        <span class="category-count">{{item.term_count}}</span>
+      </div>
+      <app-sidebar-menu [clickMethod]="clickMethod"
+                        [contextMenuMethod]="contextMenuMethod"
+                        [menuTreeData]="item.children"
+                        [nameInputCompletedMethod]="nameInputCompletedMethod"></app-sidebar-menu>
+    </div>
+  </ng-container>
+</div>

@@ -146,6 +146,7 @@ export declare namespace Hamter {
     term_parent: number;
     term_count: number;
     onRename: boolean;
+    children?: TermInterface[];
   }
 
   interface ArticleInputDataInterface {

@@ -21,8 +21,16 @@ class Communication {
   public remote: Electron.Remote;
 
   constructor() {
-    this.ipcRenderer = (<any>window).require('electron').ipcRenderer;
-    this.remote = (<any>window).require('electron').remote;
+    const electron = (<any>window).require ? (<any>window).require('electron') : {
+      ipcRenderer: {
+        on() {
+        },
+        send() {
+        }
+      }
+    };
+    this.ipcRenderer = electron.ipcRenderer;
+    this.remote = electron.remote;
 
     // 添加一个回调事件监听
     this.addEvent({

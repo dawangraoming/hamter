@@ -19,31 +19,37 @@
     </dl>
     <div class="categories-list-container custom-categories-list">
       <h6 class="categories-list-title">个人分类</h6>
-      <ul class="categories-list-scroll" (contextmenu)="showContextMenuMethod($event)">
-        <ng-container *ngFor="let item of userCategoryList | async">
-          <li class="categories-list-item iconfont icon-folder"
-              *ngIf="item.term_id !== 1"
-              (click)="selectTermMethod(item.term_id)"
-              [ngClass]="{
-                'on-selected': item.term_id === contextMenuOnTermId,
-                'categories-list-item-opened': item.term_id === selectedTermId
-              }"
-              (contextmenu)="showContextMenuMethod($event, item.term_id)">
-            <div class="category-info">
-            <span class="category-name"
-                  *ngIf="renameTermId !== item.term_id; else inputComponent">{{item.term_name}}</span>
-              <ng-template #inputComponent>
-                <app-category-input
-                  class="category-name-input"
-                  (nameInputCompleted)="renameTermCompletedMethod($event)"
-                  [sourceName]="item.term_name"
-                  [termId]="item.term_id"></app-category-input>
-              </ng-template>
-              <span class="category-count">{{item.term_count}}</span>
-            </div>
-          </li>
-        </ng-container>
-      </ul>
+      <div class="categories-list-scroll" (contextmenu)="showContextMenuMethod($event)">
+        <app-sidebar-menu  [clickMethod]="selectTermMethod"
+                           [contextMenuMethod]="showContextMenuMethod"
+                           [menuTreeData]="userCategoryList | async"
+                           [nameInputCompletedMethod]="renameTermCompletedMethod"></app-sidebar-menu>
+      </div>
+      <!--<ul class="categories-list-scroll" (contextmenu)="showContextMenuMethod($event)">-->
+        <!--<ng-container *ngFor="let item of userCategoryList | async">-->
+          <!--<li class="categories-list-item iconfont icon-folder"-->
+              <!--*ngIf="item.term_id !== 1"-->
+              <!--(click)="selectTermMethod(item.term_id)"-->
+              <!--[ngClass]="{-->
+                <!--'on-selected': item.term_id === contextMenuOnTermId,-->
+                <!--'categories-list-item-opened': item.term_id === selectedTermId-->
+              <!--}"-->
+              <!--(contextmenu)="showContextMenuMethod($event, item.term_id)">-->
+            <!--<div class="category-info">-->
+            <!--<span class="category-name"-->
+                  <!--*ngIf="renameTermId !== item.term_id; else inputComponent">{{item.term_name}}</span>-->
+              <!--<ng-template #inputComponent>-->
+                <!--<app-category-input-->
+                  <!--class="category-name-input"-->
+                  <!--(nameInputCompleted)="renameTermCompletedMethod($event)"-->
+                  <!--[sourceName]="item.term_name"-->
+                  <!--[termId]="item.term_id"></app-category-input>-->
+              <!--</ng-template>-->
+              <!--<span class="category-count">{{item.term_count}}</span>-->
+            <!--</div>-->
+          <!--</li>-->
+        <!--</ng-container>-->
+      <!--</ul>-->
     </div>
     <div class="context-menu" *ngIf="contextMenuShow"
          [ngStyle]="contextMenuStyle">

@@ -16,6 +16,7 @@ import {GalleryComponent} from './gallery/gallery.component';
 import {CategoryInputComponent} from './category-input/category-input.component';
 import { DetailsBarComponent } from './details-bar/details-bar.component';
 import { DraggableDirective } from './draggable.directive';
+import { SidebarMenuComponent } from './sidebar-menu/sidebar-menu.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { DraggableDirective } from './draggable.directive';
     GalleryComponent,
     CategoryInputComponent,
     DetailsBarComponent,
-    DraggableDirective
+    DraggableDirective,
+    SidebarMenuComponent
   ],
   imports: [
     BrowserModule,
